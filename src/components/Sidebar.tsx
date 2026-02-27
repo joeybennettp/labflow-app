@@ -1,26 +1,33 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 const NAV_ITEMS = [
-  { icon: '📋', label: 'Case Dashboard', active: true },
-  { icon: '👨‍⚕️', label: 'Doctors', active: false },
-  { icon: '💰', label: 'Invoices', active: false },
+  { icon: '📋', label: 'Case Dashboard', href: '/' },
+  { icon: '👨‍⚕️', label: 'Doctors', href: '/doctors' },
+  { icon: '💰', label: 'Invoices', href: '/invoices' },
 ];
 
 const ACCOUNT_ITEMS = [
-  { icon: '⚙️', label: 'Settings', active: false },
+  { icon: '⚙️', label: 'Settings', href: '/settings', disabled: true },
 ];
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="w-60 h-screen bg-slate-900 flex flex-col shrink-0">
       {/* Logo */}
       <div className="px-5 py-4 border-b border-slate-700/50">
-        <a href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-brand-600 rounded-md flex items-center justify-center text-white text-sm font-black">
             LF
           </div>
           <span className="text-white font-extrabold text-lg tracking-tight">
             LabFlow
           </span>
-        </a>
+        </Link>
       </div>
 
       {/* Navigation */}
@@ -28,34 +35,51 @@ export default function Sidebar() {
         <div className="px-3 py-2 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
           Main
         </div>
-        {NAV_ITEMS.map((item) => (
-          <button
-            key={item.label}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
-              item.active
-                ? 'bg-brand-600 text-white'
-                : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200 cursor-not-allowed opacity-60'
-            }`}
-            disabled={!item.active}
-          >
-            <span className="text-base">{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
+        {NAV_ITEMS.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
+                isActive
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200'
+              }`}
+            >
+              <span className="text-base">{item.icon}</span>
+              {item.label}
+            </Link>
+          );
+        })}
 
         <div className="px-3 py-2 mt-4 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
           Account
         </div>
-        {ACCOUNT_ITEMS.map((item) => (
-          <button
-            key={item.label}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/[0.07] hover:text-slate-200 cursor-not-allowed opacity-60 mb-0.5"
-            disabled
-          >
-            <span className="text-base">{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
+        {ACCOUNT_ITEMS.map((item) =>
+          item.disabled ? (
+            <span
+              key={item.label}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 opacity-60 cursor-not-allowed mb-0.5"
+            >
+              <span className="text-base">{item.icon}</span>
+              {item.label}
+            </span>
+          ) : (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
+                pathname === item.href
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200'
+              }`}
+            >
+              <span className="text-base">{item.icon}</span>
+              {item.label}
+            </Link>
+          )
+        )}
       </nav>
 
       {/* Footer - Lab Info */}
