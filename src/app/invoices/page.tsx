@@ -2,14 +2,28 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Case } from '@/lib/types';
+import { Case, Doctor } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
 import StatusBadge from '@/components/StatusBadge';
+import generateInvoicePDF from '@/lib/generateInvoicePDF';
+
+type LabSettings = {
+  id: string;
+  lab_name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  email: string;
+};
 
 type InvoiceFilter = 'all' | 'pending' | 'invoiced';
 
 export default function InvoicesPage() {
   const [cases, setCases] = useState<Case[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [labSettings, setLabSettings] = useState<LabSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<InvoiceFilter>('all');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -24,7 +38,15 @@ export default function InvoicesPage() {
 
   useEffect(() => {
     async function fetchData() {
-      await refreshCases();
+      const [, doctorsRes, settingsRes] = await Promise.all([
+        refreshCases(),
+        supabase.from('doctors').select('*').order('name', { ascending: true }),
+        supabase.from('lab_settings').select('*').limit(1).single(),
+      ]);
+
+      if (doctorsRes.data) setDoctors(doctorsRes.data as Doctor[]);
+      if (settingsRes.data) setLabSettings(settingsRes.data as LabSettings);
+
       setLoading(false);
     }
     fetchData();
@@ -52,6 +74,13 @@ export default function InvoicesPage() {
     .filter((c) => c.invoiced)
     .reduce((sum, c) => sum + Number(c.price), 0);
 
+  const pendingCases = cases.filter((c) => !c.invoiced);
+
+  function handleGeneratePDF() {
+    if (pendingCases.length === 0 || !labSettings) return;
+    generateInvoicePDF(pendingCases, labSettings, doctors);
+  }
+
   const FILTERS: { key: InvoiceFilter; label: string }[] = [
     { key: 'all', label: 'All Cases' },
     { key: 'pending', label: 'Pending' },
@@ -62,7 +91,7 @@ export default function InvoicesPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center shrink-0">
+        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -74,6 +103,14 @@ export default function InvoicesPage() {
               Invoices
             </h1>
           </div>
+          <button
+            onClick={handleGeneratePDF}
+            disabled={pendingCases.length === 0 || !labSettings}
+            className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title={pendingCases.length === 0 ? 'No pending cases to invoice' : 'Generate PDF for all pending cases'}
+          >
+            Generate Invoice PDF
+          </button>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-7">
           {loading ? (
