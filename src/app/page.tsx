@@ -7,6 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import StatsGrid from '@/components/StatsGrid';
 import CasesTable from '@/components/CasesTable';
+import AnalyticsGrid from '@/components/AnalyticsGrid';
 import CaseDetailModal from '@/components/CaseDetailModal';
 import CaseFormModal, { CaseFormData } from '@/components/CaseFormModal';
 
@@ -192,6 +193,7 @@ export default function DashboardPage() {
           {!loading && !error && (
             <>
               <StatsGrid cases={cases} />
+              <AnalyticsGrid cases={cases} />
               <CasesTable cases={cases} onRowClick={handleRowClick} />
             </>
           )}
