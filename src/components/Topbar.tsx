@@ -1,0 +1,33 @@
+'use client';
+
+export default function Topbar() {
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  return (
+    <header className="bg-white border-b border-slate-200 px-7 h-16 flex items-center justify-between shrink-0">
+      <h1 className="text-[1.0625rem] font-bold text-slate-900">
+        Case Dashboard
+      </h1>
+
+      <div className="flex items-center gap-3">
+        <span className="text-sm text-slate-400 hidden sm:block">{today}</span>
+
+        {/* Notification bell */}
+        <button className="w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-base hover:bg-slate-50 transition-colors relative">
+          🔔
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-600 rounded-full border-2 border-white" />
+        </button>
+
+        {/* Avatar */}
+        <div className="w-9 h-9 bg-brand-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+          PD
+        </div>
+      </div>
+    </header>
+  );
+}
