@@ -49,16 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    // Check current session on mount
-    async function checkUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      if (user) await fetchRole(user.id);
-      setLoading(false);
-    }
-    checkUser();
-
-    // Listen for auth state changes (sign in, sign out, token refresh)
+    // onAuthStateChange fires INITIAL_SESSION immediately on mount,
+    // so we don't need a separate getUser() call (which causes lock conflicts).
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         const currentUser = session?.user ?? null;
