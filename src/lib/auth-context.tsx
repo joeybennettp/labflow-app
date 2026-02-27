@@ -38,35 +38,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Fetch the user's role from user_profiles
   async function fetchRole(userId: string) {
-    const { data } = await supabase
-      .from('user_profiles')
-      .select('role')
-      .eq('id', userId)
-      .single();
+    try {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
 
-    // Default to 'tech' if no profile exists (safe default)
-    setRole((data?.role as UserRole) || 'tech');
+      // Default to 'tech' if no profile exists (safe default)
+      setRole((data?.role as UserRole) || 'tech');
+    } catch {
+      setRole('tech');
+    }
   }
 
   useEffect(() => {
     let mounted = true;
 
-    // getSession() reads from localStorage — no network request, no lock.
-    async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!mounted) return;
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      if (currentUser) await fetchRole(currentUser.id);
-      setLoading(false);
-    }
-    init();
-
-    // Listen for future changes (sign in, sign out, token refresh).
-    // Skip INITIAL_SESSION since init() already handles it.
+    // Use onAuthStateChange as the single source of truth.
+    // It fires INITIAL_SESSION synchronously on registration.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'INITIAL_SESSION') return;
+      async (_event, session) => {
         if (!mounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
@@ -75,12 +67,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setRole('tech');
         }
+        setLoading(false);
       }
     );
+
+    // Safety timeout — if auth never resolves (broken lock, etc.),
+    // stop loading after 3 seconds so the app isn't stuck forever.
+    const timeout = setTimeout(() => {
+      if (mounted && loading) {
+        setLoading(false);
+      }
+    }, 3000);
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      clearTimeout(timeout);
     };
   }, []);
 
