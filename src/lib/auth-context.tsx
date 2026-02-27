@@ -49,10 +49,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    // onAuthStateChange fires INITIAL_SESSION immediately on mount,
-    // so we don't need a separate getUser() call (which causes lock conflicts).
+    let mounted = true;
+
+    // getSession() reads from localStorage — no network request, no lock.
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) await fetchRole(currentUser.id);
+      setLoading(false);
+    }
+    init();
+
+    // Listen for future changes (sign in, sign out, token refresh).
+    // Skip INITIAL_SESSION since init() already handles it.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
+        if (event === 'INITIAL_SESSION') return;
+        if (!mounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         if (currentUser) {
@@ -60,11 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setRole('tech');
         }
-        setLoading(false);
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Redirect logic
