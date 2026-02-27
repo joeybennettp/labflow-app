@@ -6,6 +6,7 @@ import StatusBadge from './StatusBadge';
 
 type Props = {
   cases: Case[];
+  onRowClick?: (c: Case) => void;
 };
 
 const FILTER_OPTIONS: { key: string; label: string }[] = [
@@ -49,7 +50,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function CasesTable({ cases }: Props) {
+export default function CasesTable({ cases, onRowClick }: Props) {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortColumn>('due');
@@ -196,7 +197,8 @@ export default function CasesTable({ cases }: Props) {
                 return (
                   <tr
                     key={c.id}
-                    className={`hover:bg-slate-50 transition-colors ${
+                    onClick={() => onRowClick?.(c)}
+                    className={`hover:bg-slate-50 transition-colors cursor-pointer ${
                       c.rush ? 'bg-red-50 hover:bg-red-100' : ''
                     }`}
                   >

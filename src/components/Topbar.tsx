@@ -1,6 +1,10 @@
 'use client';
 
-export default function Topbar() {
+type Props = {
+  onNewCase?: () => void;
+};
+
+export default function Topbar({ onNewCase }: Props) {
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -16,6 +20,16 @@ export default function Topbar() {
 
       <div className="flex items-center gap-3">
         <span className="text-sm text-slate-400 hidden sm:block">{today}</span>
+
+        {/* New Case button */}
+        {onNewCase && (
+          <button
+            onClick={onNewCase}
+            className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors flex items-center gap-1.5"
+          >
+            + New Case
+          </button>
+        )}
 
         {/* Notification bell */}
         <button className="w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-base hover:bg-slate-50 transition-colors relative">

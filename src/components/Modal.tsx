@@ -1,0 +1,66 @@
+'use client';
+
+import { useEffect, ReactNode } from 'react';
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: ReactNode;
+  footer?: ReactNode;
+  wide?: boolean;
+};
+
+export default function Modal({ open, onClose, title, children, footer, wide }: Props) {
+  // Close on Escape key
+  useEffect(() => {
+    if (!open) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className={`bg-white rounded-xl shadow-xl w-full flex flex-col overflow-hidden max-h-[calc(100vh-3rem)] ${
+          wide ? 'max-w-2xl' : 'max-w-lg'
+        }`}
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 flex items-center justify-between shrink-0">
+          <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center text-lg transition-colors"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 pb-4 overflow-y-auto flex-1 min-h-0">
+          {children}
+        </div>
+
+        {/* Footer */}
+        {footer && (
+          <div className="px-6 pb-5 pt-2 flex justify-end gap-3 shrink-0 border-t border-slate-100">
+            {footer}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

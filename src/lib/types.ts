@@ -17,5 +17,13 @@ export type Case = {
   doctors: { name: string } | null;
 };
 
+export type Doctor = {
+  id: string;
+  name: string;
+  practice: string;
+  email: string | null;
+  phone: string | null;
+};
+
 export type SortColumn = 'case_number' | 'patient' | 'doctor' | 'type' | 'status' | 'due' | 'price';
 export type SortDirection = 'asc' | 'desc';
