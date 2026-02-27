@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Doctor, Case } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
-import Topbar from '@/components/Topbar';
+import DoctorFormModal, { DoctorFormData } from '@/components/DoctorFormModal';
 
 type DoctorWithStats = Doctor & {
   activeCases: number;
@@ -17,42 +17,110 @@ export default function DoctorsPage() {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      const [doctorsRes, casesRes] = await Promise.all([
-        supabase.from('doctors').select('*').order('name'),
-        supabase.from('cases').select('*, doctors(name)').order('due'),
-      ]);
+  // Modal state
+  const [showNewDoctor, setShowNewDoctor] = useState(false);
+  const [showEditDoctor, setShowEditDoctor] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorWithStats | null>(null);
 
-      const doctorsList = (doctorsRes.data as Doctor[]) || [];
-      const casesList = (casesRes.data as Case[]) || [];
-      setCases(casesList);
+  const fetchData = useCallback(async () => {
+    const [doctorsRes, casesRes] = await Promise.all([
+      supabase.from('doctors').select('*').order('name'),
+      supabase.from('cases').select('*, doctors(name)').order('due'),
+    ]);
 
-      // Compute stats per doctor
-      const enriched = doctorsList.map((doc) => {
-        const docCases = casesList.filter((c) => c.doctor_id === doc.id);
-        return {
-          ...doc,
-          activeCases: docCases.filter((c) => c.status !== 'shipped').length,
-          totalCases: docCases.length,
-          totalRevenue: docCases.reduce((sum, c) => sum + Number(c.price), 0),
-        };
-      });
+    const doctorsList = (doctorsRes.data as Doctor[]) || [];
+    const casesList = (casesRes.data as Case[]) || [];
+    setCases(casesList);
 
-      setDoctors(enriched);
-      setLoading(false);
-    }
-    fetchData();
+    // Compute stats per doctor
+    const enriched = doctorsList.map((doc) => {
+      const docCases = casesList.filter((c) => c.doctor_id === doc.id);
+      return {
+        ...doc,
+        activeCases: docCases.filter((c) => c.status !== 'shipped').length,
+        totalCases: docCases.length,
+        totalRevenue: docCases.reduce((sum, c) => sum + Number(c.price), 0),
+      };
+    });
+
+    setDoctors(enriched);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // --- Mutations ---
+
+  async function handleCreateDoctor(formData: DoctorFormData) {
+    const { error } = await supabase.from('doctors').insert({
+      name: formData.name,
+      practice: formData.practice,
+      email: formData.email || null,
+      phone: formData.phone || null,
+    });
+    if (error) throw new Error(error.message);
+    await fetchData();
+    setShowNewDoctor(false);
+  }
+
+  async function handleUpdateDoctor(formData: DoctorFormData) {
+    if (!selectedDoctor) return;
+    const { error } = await supabase
+      .from('doctors')
+      .update({
+        name: formData.name,
+        practice: formData.practice,
+        email: formData.email || null,
+        phone: formData.phone || null,
+      })
+      .eq('id', selectedDoctor.id);
+    if (error) throw new Error(error.message);
+    await fetchData();
+    setShowEditDoctor(false);
+    setSelectedDoctor(null);
+  }
+
+  async function handleDeleteDoctor(doc: DoctorWithStats) {
+    if (doc.totalCases > 0) {
+      alert(
+        `Cannot delete ${doc.name} — they have ${doc.totalCases} case${doc.totalCases === 1 ? '' : 's'} linked. Remove or reassign their cases first.`
+      );
+      return;
+    }
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${doc.name}? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    const { error } = await supabase.from('doctors').delete().eq('id', doc.id);
+    if (error) {
+      alert('Failed to delete doctor: ' + error.message);
+      return;
+    }
+    await fetchData();
+  }
+
+  function openEdit(doc: DoctorWithStats) {
+    setSelectedDoctor(doc);
+    setShowEditDoctor(true);
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-7 h-16 flex items-center shrink-0">
+        <header className="bg-white border-b border-slate-200 px-7 h-16 flex items-center justify-between shrink-0">
           <h1 className="text-[1.0625rem] font-bold text-slate-900">
             Doctors
           </h1>
+          <button
+            onClick={() => setShowNewDoctor(true)}
+            className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors flex items-center gap-1.5"
+          >
+            + Add Doctor
+          </button>
         </header>
         <main className="flex-1 overflow-y-auto p-7">
           {loading ? (
@@ -82,13 +150,30 @@ export default function DoctorsPage() {
                           .map((n) => n[0])
                           .join('')}
                       </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="text-sm font-bold text-slate-900 truncate">
                           {doc.name}
                         </div>
                         <div className="text-xs text-slate-500 truncate">
                           {doc.practice}
                         </div>
+                      </div>
+                      {/* Edit / Delete buttons */}
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() => openEdit(doc)}
+                          title="Edit doctor"
+                          className="w-8 h-8 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600 flex items-center justify-center text-sm transition-colors"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDoctor(doc)}
+                          title="Delete doctor"
+                          className="w-8 h-8 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-sm transition-colors"
+                        >
+                          🗑️
+                        </button>
                       </div>
                     </div>
 
@@ -142,6 +227,28 @@ export default function DoctorsPage() {
           )}
         </main>
       </div>
+
+      {/* New Doctor Modal */}
+      {showNewDoctor && (
+        <DoctorFormModal
+          mode="create"
+          onSave={handleCreateDoctor}
+          onClose={() => setShowNewDoctor(false)}
+        />
+      )}
+
+      {/* Edit Doctor Modal */}
+      {showEditDoctor && selectedDoctor && (
+        <DoctorFormModal
+          mode="edit"
+          doctorData={selectedDoctor}
+          onSave={handleUpdateDoctor}
+          onClose={() => {
+            setShowEditDoctor(false);
+            setSelectedDoctor(null);
+          }}
+        />
+      )}
     </div>
   );
 }
