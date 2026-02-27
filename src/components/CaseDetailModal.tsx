@@ -8,6 +8,7 @@ type Props = {
   caseData: Case;
   onClose: () => void;
   onEdit: () => void;
+  onDelete: (id: string) => void;
   onStatusChange: (id: string, newStatus: Case['status']) => void;
 };
 
@@ -51,6 +52,7 @@ export default function CaseDetailModal({
   caseData,
   onClose,
   onEdit,
+  onDelete,
   onStatusChange,
 }: Props) {
   const currentIndex = STATUS_FLOW.indexOf(caseData.status);
@@ -66,6 +68,12 @@ export default function CaseDetailModal({
         className="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
       >
         Close
+      </button>
+      <button
+        onClick={() => onDelete(caseData.id)}
+        className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+      >
+        🗑️ Delete
       </button>
       <button
         onClick={onEdit}

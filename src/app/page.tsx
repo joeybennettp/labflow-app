@@ -135,6 +135,22 @@ export default function DashboardPage() {
     closeAllModals();
   }
 
+  async function handleDeleteCase(id: string) {
+    const caseToDelete = cases.find((c) => c.id === id);
+    const confirmed = window.confirm(
+      `Are you sure you want to delete case ${caseToDelete?.case_number || ''}? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    const { error } = await supabase.from('cases').delete().eq('id', id);
+    if (error) {
+      alert('Failed to delete case: ' + error.message);
+      return;
+    }
+    await refreshCases();
+    closeAllModals();
+  }
+
   async function handleStatusChange(id: string, newStatus: Case['status']) {
     const { error } = await supabase
       .from('cases')
@@ -185,6 +201,7 @@ export default function DashboardPage() {
           caseData={selectedCase}
           onClose={closeAllModals}
           onEdit={handleEditFromDetail}
+          onDelete={handleDeleteCase}
           onStatusChange={handleStatusChange}
         />
       )}
