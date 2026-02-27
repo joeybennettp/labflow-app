@@ -28,6 +28,13 @@ const STATUS_LABELS: Record<string, string> = {
   shipped: 'Shipped',
 };
 
+// Statuses that can move backward, and where they go
+const BACKWARD_MOVES: Partial<Record<Case['status'], { target: Case['status']; label: string }>> = {
+  quality_check: { target: 'in_progress', label: 'QC Failed → Back to In Progress' },
+  ready: { target: 'quality_check', label: 'Back to QC Check' },
+  shipped: { target: 'ready', label: 'Cancel Shipment → Back to Ready' },
+};
+
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00');
   return date.toLocaleDateString('en-US', {
@@ -57,6 +64,7 @@ export default function CaseDetailModal({
 }: Props) {
   const currentIndex = STATUS_FLOW.indexOf(caseData.status);
   const nextStatus = currentIndex < STATUS_FLOW.length - 1 ? STATUS_FLOW[currentIndex + 1] : null;
+  const backwardMove = BACKWARD_MOVES[caseData.status] || null;
   const isOverdue =
     caseData.status !== 'shipped' &&
     caseData.due < new Date().toISOString().split('T')[0];
@@ -81,6 +89,14 @@ export default function CaseDetailModal({
       >
         ✏️ Edit Case
       </button>
+      {backwardMove && (
+        <button
+          onClick={() => onStatusChange(caseData.id, backwardMove.target)}
+          className="px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
+        >
+          ← {backwardMove.label}
+        </button>
+      )}
       {nextStatus && (
         <button
           onClick={() => onStatusChange(caseData.id, nextStatus)}
