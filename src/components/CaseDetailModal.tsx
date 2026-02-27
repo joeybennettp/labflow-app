@@ -30,9 +30,9 @@ const STATUS_LABELS: Record<string, string> = {
 
 // Statuses that can move backward, and where they go
 const BACKWARD_MOVES: Partial<Record<Case['status'], { target: Case['status']; label: string }>> = {
-  quality_check: { target: 'in_progress', label: 'QC Failed → Back to In Progress' },
+  quality_check: { target: 'in_progress', label: 'Back to In Progress' },
   ready: { target: 'quality_check', label: 'Back to QC Check' },
-  shipped: { target: 'ready', label: 'Cancel Shipment → Back to Ready' },
+  shipped: { target: 'ready', label: 'Back to Ready' },
 };
 
 function formatDate(dateStr: string): string {
