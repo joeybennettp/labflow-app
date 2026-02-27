@@ -39,8 +39,8 @@ export default function Modal({ open, onClose, title, children, footer, wide }: 
         aria-modal="true"
       >
         {/* Header */}
-        <div className="px-6 pt-5 pb-4 flex items-center justify-between shrink-0">
-          <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+        <div className="px-4 md:px-6 pt-4 md:pt-5 pb-3 md:pb-4 flex items-center justify-between shrink-0">
+          <h2 className="text-base md:text-lg font-bold text-slate-900">{title}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center text-lg transition-colors"
@@ -50,13 +50,13 @@ export default function Modal({ open, onClose, title, children, footer, wide }: 
         </div>
 
         {/* Body */}
-        <div className="px-6 pb-4 overflow-y-auto flex-1 min-h-0">
+        <div className="px-4 md:px-6 pb-3 md:pb-4 overflow-y-auto flex-1 min-h-0">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <div className="px-6 pb-5 pt-2 flex justify-end gap-3 shrink-0 border-t border-slate-100">
+          <div className="px-4 md:px-6 pb-4 md:pb-5 pt-2 flex flex-wrap justify-end gap-2 md:gap-3 shrink-0 border-t border-slate-100">
             {footer}
           </div>
         )}

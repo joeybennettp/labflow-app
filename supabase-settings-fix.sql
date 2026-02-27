@@ -1,7 +1,9 @@
 -- ============================================
--- Create lab_settings table + RLS policies
+-- Fix: Drop partial table and recreate
 -- Run this in Supabase SQL Editor
 -- ============================================
+
+drop table if exists lab_settings;
 
 create table lab_settings (
   id uuid default gen_random_uuid() primary key,
@@ -16,7 +18,7 @@ create table lab_settings (
   updated_at timestamp with time zone default now()
 );
 
--- Auto-update timestamp function (create if not exists)
+-- Auto-update timestamp function
 create or replace function update_updated_at_column()
 returns trigger as $$
 begin
@@ -45,5 +47,5 @@ create policy "Authenticated update lab_settings"
   on lab_settings for update
   using (auth.role() = 'authenticated');
 
--- Insert a default row so there's always one
+-- Insert a default row
 insert into lab_settings (lab_name) values ('My Dental Lab');

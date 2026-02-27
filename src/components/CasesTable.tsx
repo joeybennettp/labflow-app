@@ -26,14 +26,14 @@ const STATUS_ORDER: Record<string, number> = {
   shipped: 5,
 };
 
-const COLUMNS: { key: SortColumn; label: string }[] = [
+const COLUMNS: { key: SortColumn; label: string; hideOnMobile?: boolean }[] = [
   { key: 'case_number', label: 'Case #' },
   { key: 'patient', label: 'Patient' },
-  { key: 'doctor', label: 'Doctor' },
-  { key: 'type', label: 'Restoration' },
+  { key: 'doctor', label: 'Doctor', hideOnMobile: true },
+  { key: 'type', label: 'Restoration', hideOnMobile: true },
   { key: 'status', label: 'Status' },
   { key: 'due', label: 'Due Date' },
-  { key: 'price', label: 'Price' },
+  { key: 'price', label: 'Price', hideOnMobile: true },
 ];
 
 function isOverdue(due: string, status: string): boolean {
@@ -126,7 +126,7 @@ export default function CasesTable({ cases, onRowClick }: Props) {
   return (
     <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
       {/* Header with filters and search */}
-      <div className="p-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-4">
+      <div className="p-3 md:p-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-3 md:gap-4">
         <span className="text-[0.9375rem] font-bold text-slate-900">
           Case Tracker
         </span>
@@ -136,13 +136,13 @@ export default function CasesTable({ cases, onRowClick }: Props) {
             placeholder="Search cases..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm w-48 focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm w-full md:w-48 focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
           />
           {FILTER_OPTIONS.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`px-3 py-1.5 rounded-lg text-[0.8125rem] font-medium border transition-colors ${
+              className={`px-2.5 md:px-3 py-1.5 rounded-lg text-[0.75rem] md:text-[0.8125rem] font-medium border transition-colors ${
                 filter === f.key
                   ? 'bg-brand-600 text-white border-brand-600'
                   : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
@@ -170,9 +170,11 @@ export default function CasesTable({ cases, onRowClick }: Props) {
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className={`px-4 py-3 text-left text-xs font-bold uppercase tracking-wide bg-slate-50 border-b border-slate-200 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
+                    className={`px-3 md:px-4 py-3 text-left text-xs font-bold uppercase tracking-wide bg-slate-50 border-b border-slate-200 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
                       isActive ? 'text-blue-600' : 'text-slate-500'
-                    } ${col.key === 'price' ? 'text-right' : ''}`}
+                    } ${col.key === 'price' ? 'text-right' : ''} ${
+                      col.hideOnMobile ? 'hidden md:table-cell' : ''
+                    }`}
                   >
                     {col.label}
                     <span className="text-[0.625rem] ml-0.5">{arrow}</span>
@@ -202,7 +204,7 @@ export default function CasesTable({ cases, onRowClick }: Props) {
                       c.rush ? 'bg-red-50 hover:bg-red-100' : ''
                     }`}
                   >
-                    <td className="px-4 py-3.5 text-sm border-b border-slate-100">
+                    <td className="px-3 md:px-4 py-3 md:py-3.5 text-sm border-b border-slate-100">
                       <span className="font-mono font-semibold text-brand-600">
                         {c.case_number}
                       </span>
@@ -212,13 +214,13 @@ export default function CasesTable({ cases, onRowClick }: Props) {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 font-medium">
+                    <td className="px-3 md:px-4 py-3 md:py-3.5 text-sm text-slate-700 border-b border-slate-100 font-medium">
                       {c.patient}
                     </td>
-                    <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
+                    <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
                       {c.doctors?.name || '—'}
                     </td>
-                    <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
+                    <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
                       {c.type}
                       {c.shade && c.shade !== '-' && (
                         <span className="text-slate-400 ml-1 text-xs">
@@ -226,11 +228,11 @@ export default function CasesTable({ cases, onRowClick }: Props) {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 border-b border-slate-100">
+                    <td className="px-3 md:px-4 py-3 md:py-3.5 border-b border-slate-100">
                       <StatusBadge status={c.status} />
                     </td>
                     <td
-                      className={`px-4 py-3.5 text-sm border-b border-slate-100 ${
+                      className={`px-3 md:px-4 py-3 md:py-3.5 text-sm border-b border-slate-100 ${
                         overdue
                           ? 'text-red-600 font-semibold'
                           : 'text-slate-700'
@@ -239,7 +241,7 @@ export default function CasesTable({ cases, onRowClick }: Props) {
                       {overdue && '⚠ '}
                       {formatDate(c.due)}
                     </td>
-                    <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 text-right font-semibold">
+                    <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 text-right font-semibold">
                       ${Number(c.price).toFixed(2)}
                     </td>
                   </tr>

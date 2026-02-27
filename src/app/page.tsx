@@ -16,6 +16,9 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Sidebar state (mobile)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   // Modal state
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
   const [showDetail, setShowDetail] = useState(false);
@@ -172,10 +175,10 @@ export default function DashboardPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <Topbar onNewCase={handleNewCase} />
-        <main className="flex-1 overflow-y-auto p-7">
+        <Topbar onNewCase={handleNewCase} onMenuToggle={() => setSidebarOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-7">
           {loading && (
             <div className="flex items-center justify-center h-64 text-slate-400">
               Loading cases...

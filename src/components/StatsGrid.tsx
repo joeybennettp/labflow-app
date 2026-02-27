@@ -58,15 +58,15 @@ export default function StatsGrid({ cases }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="bg-white border border-slate-200 rounded-lg p-5 flex items-start justify-between"
+          className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between"
         >
           <div>
             <div
-              className={`text-3xl font-extrabold tracking-tight leading-none ${
+              className={`text-2xl md:text-3xl font-extrabold tracking-tight leading-none ${
                 stat.valueColor || 'text-slate-900'
               }`}
             >
@@ -78,7 +78,7 @@ export default function StatsGrid({ cases }: Props) {
             </div>
           </div>
           <div
-            className={`w-11 h-11 rounded-lg flex items-center justify-center text-xl shrink-0 ${stat.iconBg}`}
+            className={`w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center text-lg md:text-xl shrink-0 ${stat.iconBg}`}
           >
             {stat.icon}
           </div>

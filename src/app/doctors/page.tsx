@@ -17,6 +17,9 @@ export default function DoctorsPage() {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Sidebar state (mobile)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   // Modal state
   const [showNewDoctor, setShowNewDoctor] = useState(false);
   const [showEditDoctor, setShowEditDoctor] = useState(false);
@@ -109,12 +112,20 @@ export default function DoctorsPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-7 h-16 flex items-center justify-between shrink-0">
-          <h1 className="text-[1.0625rem] font-bold text-slate-900">
-            Doctors
-          </h1>
+        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-lg hover:bg-slate-50 transition-colors"
+            >
+              ☰
+            </button>
+            <h1 className="text-[1.0625rem] font-bold text-slate-900">
+              Doctors
+            </h1>
+          </div>
           <button
             onClick={() => setShowNewDoctor(true)}
             className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors flex items-center gap-1.5"
@@ -122,7 +133,7 @@ export default function DoctorsPage() {
             + Add Doctor
           </button>
         </header>
-        <main className="flex-1 overflow-y-auto p-7">
+        <main className="flex-1 overflow-y-auto p-4 md:p-7">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400">
               Loading doctors...

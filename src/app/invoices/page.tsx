@@ -12,6 +12,7 @@ export default function InvoicesPage() {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<InvoiceFilter>('all');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const refreshCases = useCallback(async () => {
     const { data } = await supabase
@@ -59,14 +60,22 @@ export default function InvoicesPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-7 h-16 flex items-center shrink-0">
-          <h1 className="text-[1.0625rem] font-bold text-slate-900">
-            Invoices
-          </h1>
+        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center shrink-0">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-lg hover:bg-slate-50 transition-colors"
+            >
+              ☰
+            </button>
+            <h1 className="text-[1.0625rem] font-bold text-slate-900">
+              Invoices
+            </h1>
+          </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-7">
+        <main className="flex-1 overflow-y-auto p-4 md:p-7">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400">
               Loading invoices...
@@ -143,16 +152,16 @@ export default function InvoicesPage() {
                         <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
                           Patient
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
                           Doctor
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
                           Restoration
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
                           Status
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
                           Price
                         </th>
                         <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
@@ -184,16 +193,16 @@ export default function InvoicesPage() {
                             <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 font-medium">
                               {c.patient}
                             </td>
-                            <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
+                            <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
                               {c.doctors?.name || '—'}
                             </td>
-                            <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
+                            <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100">
                               {c.type}
                             </td>
-                            <td className="px-4 py-3.5 border-b border-slate-100">
+                            <td className="hidden md:table-cell px-4 py-3.5 border-b border-slate-100">
                               <StatusBadge status={c.status} />
                             </td>
-                            <td className="px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 text-right font-semibold">
+                            <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 text-right font-semibold">
                               ${Number(c.price).toFixed(2)}
                             </td>
                             <td className="px-4 py-3.5 border-b border-slate-100 text-center">

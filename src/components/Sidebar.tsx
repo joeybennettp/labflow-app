@@ -4,6 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 
+type Props = {
+  open?: boolean;
+  onClose?: () => void;
+};
+
 const NAV_ITEMS = [
   { icon: '📋', label: 'Case Dashboard', href: '/' },
   { icon: '👨‍⚕️', label: 'Doctors', href: '/doctors' },
@@ -14,15 +19,15 @@ const ACCOUNT_ITEMS = [
   { icon: '⚙️', label: 'Settings', href: '/settings', disabled: false },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose }: Props) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
-  return (
-    <aside className="w-60 h-screen bg-slate-900 flex flex-col shrink-0">
+  const sidebarContent = (
+    <>
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-slate-700/50">
-        <Link href="/" className="flex items-center gap-2.5">
+      <div className="px-5 py-4 border-b border-slate-700/50 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
           <div className="w-8 h-8 bg-brand-600 rounded-md flex items-center justify-center text-white text-sm font-black">
             LF
           </div>
@@ -30,6 +35,15 @@ export default function Sidebar() {
             LabFlow
           </span>
         </Link>
+        {/* Close button — mobile only */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden w-8 h-8 rounded-md text-slate-400 hover:bg-white/[0.07] hover:text-white flex items-center justify-center text-lg"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
@@ -43,6 +57,7 @@ export default function Sidebar() {
             <Link
               key={item.label}
               href={item.href}
+              onClick={onClose}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
                 isActive
                   ? 'bg-brand-600 text-white'
@@ -71,6 +86,7 @@ export default function Sidebar() {
             <Link
               key={item.label}
               href={item.href}
+              onClick={onClose}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
                 pathname === item.href
                   ? 'bg-brand-600 text-white'
@@ -107,6 +123,25 @@ export default function Sidebar() {
           Sign Out
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar — always visible at md+ */}
+      <aside className="hidden md:flex w-60 h-screen bg-slate-900 flex-col shrink-0">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile sidebar — overlay when open */}
+      {open && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+          <aside className="relative w-60 h-full bg-slate-900 flex flex-col">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

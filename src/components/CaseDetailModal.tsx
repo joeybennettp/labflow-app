@@ -147,7 +147,7 @@ export default function CaseDetailModal({
       </div>
 
       {/* Detail grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 md:gap-x-6 gap-y-3 md:gap-y-4">
         <DetailField label="Patient" value={caseData.patient} />
         <DetailField label="Doctor" value={caseData.doctors?.name || '—'} />
         <DetailField label="Status">
@@ -187,7 +187,7 @@ export default function CaseDetailModal({
       )}
 
       {/* Timestamps */}
-      <div className="mt-5 pt-4 border-t border-slate-100 flex gap-6 text-xs text-slate-400">
+      <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400">
         <span>Created: {formatTimestamp(caseData.created_at)}</span>
         <span>Updated: {formatTimestamp(caseData.updated_at)}</span>
       </div>

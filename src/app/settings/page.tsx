@@ -18,6 +18,7 @@ type LabSettings = {
 export default function SettingsPage() {
   const [settings, setSettings] = useState<LabSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -85,14 +86,22 @@ export default function SettingsPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-7 h-16 flex items-center shrink-0">
-          <h1 className="text-[1.0625rem] font-bold text-slate-900">
-            Settings
-          </h1>
+        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center shrink-0">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-lg hover:bg-slate-50 transition-colors"
+            >
+              ☰
+            </button>
+            <h1 className="text-[1.0625rem] font-bold text-slate-900">
+              Settings
+            </h1>
+          </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-7">
+        <main className="flex-1 overflow-y-auto p-4 md:p-7">
           {loading ? (
             <div className="flex items-center justify-center h-64 text-slate-400">
               Loading settings...
@@ -100,7 +109,7 @@ export default function SettingsPage() {
           ) : (
             <div className="max-w-2xl">
               {/* Lab Information Section */}
-              <div className="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-6 mb-6">
                 <h2 className="text-sm font-bold text-slate-900 mb-1">
                   Lab Information
                 </h2>
@@ -139,7 +148,7 @@ export default function SettingsPage() {
                   </div>
 
                   {/* City, State, Zip */}
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-3 gap-2 md:gap-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1">
                         City
@@ -225,7 +234,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Account Section */}
-              <div className="bg-white border border-slate-200 rounded-xl p-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-6">
                 <h2 className="text-sm font-bold text-slate-900 mb-1">
                   Account
                 </h2>
