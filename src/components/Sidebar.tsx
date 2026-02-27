@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
 
 const NAV_ITEMS = [
   { icon: '📋', label: 'Case Dashboard', href: '/' },
@@ -15,6 +16,7 @@ const ACCOUNT_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user, signOut } = useAuth();
 
   return (
     <aside className="w-60 h-screen bg-slate-900 flex flex-col shrink-0">
@@ -82,21 +84,28 @@ export default function Sidebar() {
         )}
       </nav>
 
-      {/* Footer - Lab Info */}
+      {/* Footer - User Info + Sign Out */}
       <div className="px-4 py-4 border-t border-slate-700/50">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 bg-brand-600 rounded-lg flex items-center justify-center text-white text-sm font-extrabold shrink-0">
-            PD
+            {user?.email?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className="min-w-0">
             <div className="text-slate-200 text-sm font-semibold truncate">
-              Pacific Dental Lab
+              {user?.email || 'User'}
             </div>
             <div className="text-slate-500 text-xs">
               Pro Plan · Active
             </div>
           </div>
         </div>
+        <button
+          onClick={signOut}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/[0.07] hover:text-slate-200 transition-colors"
+        >
+          <span>🚪</span>
+          Sign Out
+        </button>
       </div>
     </aside>
   );
