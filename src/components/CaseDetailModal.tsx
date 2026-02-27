@@ -6,6 +6,7 @@ import StatusBadge from './StatusBadge';
 
 type Props = {
   caseData: Case;
+  isAdmin?: boolean;
   onClose: () => void;
   onEdit: () => void;
   onDelete: (id: string) => void;
@@ -57,6 +58,7 @@ function formatTimestamp(ts: string): string {
 
 export default function CaseDetailModal({
   caseData,
+  isAdmin,
   onClose,
   onEdit,
   onDelete,
@@ -176,14 +178,18 @@ export default function CaseDetailModal({
           value={formatDate(caseData.due)}
           className={isOverdue ? 'text-red-600 font-semibold' : undefined}
         />
-        <DetailField
-          label="Price"
-          value={`$${Number(caseData.price).toFixed(2)}`}
-        />
-        <DetailField
-          label="Invoiced"
-          value={caseData.invoiced ? '✅ Yes' : '❌ No'}
-        />
+        {isAdmin && (
+          <DetailField
+            label="Price"
+            value={`$${Number(caseData.price).toFixed(2)}`}
+          />
+        )}
+        {isAdmin && (
+          <DetailField
+            label="Invoiced"
+            value={caseData.invoiced ? '✅ Yes' : '❌ No'}
+          />
+        )}
         <DetailField
           label="Rush"
           value={caseData.rush ? '⚡ Yes' : 'No'}

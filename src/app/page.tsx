@@ -10,8 +10,10 @@ import CasesTable from '@/components/CasesTable';
 import AnalyticsGrid from '@/components/AnalyticsGrid';
 import CaseDetailModal from '@/components/CaseDetailModal';
 import CaseFormModal, { CaseFormData } from '@/components/CaseFormModal';
+import { useAuth } from '@/lib/auth-context';
 
 export default function DashboardPage() {
+  const { isAdmin } = useAuth();
   const [cases, setCases] = useState<Case[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -192,9 +194,9 @@ export default function DashboardPage() {
           )}
           {!loading && !error && (
             <>
-              <StatsGrid cases={cases} />
-              <AnalyticsGrid cases={cases} />
-              <CasesTable cases={cases} doctors={doctors} onRowClick={handleRowClick} />
+              <StatsGrid cases={cases} isAdmin={isAdmin} />
+              <AnalyticsGrid cases={cases} isAdmin={isAdmin} />
+              <CasesTable cases={cases} doctors={doctors} isAdmin={isAdmin} onRowClick={handleRowClick} />
             </>
           )}
         </main>
@@ -204,6 +206,7 @@ export default function DashboardPage() {
       {showDetail && selectedCase && (
         <CaseDetailModal
           caseData={selectedCase}
+          isAdmin={isAdmin}
           onClose={closeAllModals}
           onEdit={handleEditFromDetail}
           onDelete={handleDeleteCase}
@@ -215,6 +218,7 @@ export default function DashboardPage() {
         <CaseFormModal
           mode="create"
           doctors={doctors}
+          isAdmin={isAdmin}
           onSave={handleCreateCase}
           onClose={closeAllModals}
         />
@@ -225,6 +229,7 @@ export default function DashboardPage() {
           mode="edit"
           caseData={selectedCase}
           doctors={doctors}
+          isAdmin={isAdmin}
           onSave={handleUpdateCase}
           onClose={closeAllModals}
         />

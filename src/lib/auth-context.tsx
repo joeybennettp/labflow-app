@@ -5,8 +5,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from './supabase';
 import type { User } from '@supabase/supabase-js';
 
+type UserRole = 'admin' | 'tech';
+
 type AuthContextType = {
   user: User | null;
+  role: UserRole;
+  isAdmin: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
@@ -14,6 +18,8 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  role: 'tech',
+  isAdmin: false,
   loading: true,
   signIn: async () => null,
   signOut: async () => {},
@@ -25,23 +31,43 @@ export function useAuth() {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<UserRole>('tech');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+
+  // Fetch the user's role from user_profiles
+  async function fetchRole(userId: string) {
+    const { data } = await supabase
+      .from('user_profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
+
+    // Default to 'tech' if no profile exists (safe default)
+    setRole((data?.role as UserRole) || 'tech');
+  }
 
   useEffect(() => {
     // Check current session on mount
     async function checkUser() {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      if (user) await fetchRole(user.id);
       setLoading(false);
     }
     checkUser();
 
     // Listen for auth state changes (sign in, sign out, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
+      async (_event, session) => {
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        if (currentUser) {
+          await fetchRole(currentUser.id);
+        } else {
+          setRole('tech');
+        }
         setLoading(false);
       }
     );
@@ -70,8 +96,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signOut() {
     await supabase.auth.signOut();
+    setRole('tech');
     router.push('/login');
   }
+
+  const isAdmin = role === 'admin';
 
   // Show loading spinner while checking auth
   if (loading) {
@@ -83,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, role, isAdmin, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

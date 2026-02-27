@@ -10,9 +10,9 @@ type Props = {
 };
 
 const NAV_ITEMS = [
-  { icon: '📋', label: 'Case Dashboard', href: '/' },
-  { icon: '👨‍⚕️', label: 'Doctors', href: '/doctors' },
-  { icon: '💰', label: 'Invoices', href: '/invoices' },
+  { icon: '📋', label: 'Case Dashboard', href: '/', adminOnly: false },
+  { icon: '👨‍⚕️', label: 'Doctors', href: '/doctors', adminOnly: false },
+  { icon: '💰', label: 'Invoices', href: '/invoices', adminOnly: true },
 ];
 
 const ACCOUNT_ITEMS = [
@@ -21,7 +21,9 @@ const ACCOUNT_ITEMS = [
 
 export default function Sidebar({ open, onClose }: Props) {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
+
+  const visibleNavItems = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
 
   const sidebarContent = (
     <>
@@ -51,7 +53,7 @@ export default function Sidebar({ open, onClose }: Props) {
         <div className="px-3 py-2 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
           Main
         </div>
-        {NAV_ITEMS.map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
@@ -111,7 +113,7 @@ export default function Sidebar({ open, onClose }: Props) {
               {user?.email || 'User'}
             </div>
             <div className="text-slate-500 text-xs">
-              Pro Plan · Active
+              {isAdmin ? 'Admin' : 'Technician'}
             </div>
           </div>
         </div>

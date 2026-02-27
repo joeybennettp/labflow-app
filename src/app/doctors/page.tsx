@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
 import { Doctor, Case } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
 import DoctorFormModal, { DoctorFormData } from '@/components/DoctorFormModal';
@@ -13,6 +14,7 @@ type DoctorWithStats = Doctor & {
 };
 
 export default function DoctorsPage() {
+  const { isAdmin } = useAuth();
   const [doctors, setDoctors] = useState<DoctorWithStats[]>([]);
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
@@ -189,7 +191,7 @@ export default function DoctorsPage() {
                     </div>
 
                     {/* Stats row */}
-                    <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className={`grid ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'} gap-3 mb-4`}>
                       <div>
                         <div className="text-lg font-extrabold text-slate-900">
                           {doc.activeCases}
@@ -206,14 +208,16 @@ export default function DoctorsPage() {
                           Total
                         </div>
                       </div>
-                      <div>
-                        <div className="text-lg font-extrabold text-slate-900">
-                          ${doc.totalRevenue.toLocaleString()}
+                      {isAdmin && (
+                        <div>
+                          <div className="text-lg font-extrabold text-slate-900">
+                            ${doc.totalRevenue.toLocaleString()}
+                          </div>
+                          <div className="text-[0.6875rem] text-slate-500">
+                            Revenue
+                          </div>
                         </div>
-                        <div className="text-[0.6875rem] text-slate-500">
-                          Revenue
-                        </div>
-                      </div>
+                      )}
                     </div>
 
                     {/* Contact info */}

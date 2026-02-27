@@ -18,6 +18,7 @@ import {
 
 type Props = {
   cases: Case[];
+  isAdmin?: boolean;
 };
 
 const STATUS_COLORS: Record<Case['status'], string> = {
@@ -36,7 +37,7 @@ const STATUS_LABELS: Record<Case['status'], string> = {
   shipped: 'Shipped',
 };
 
-export default function AnalyticsGrid({ cases }: Props) {
+export default function AnalyticsGrid({ cases, isAdmin }: Props) {
   // Chart 1: Cases by status
   const statusData = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -147,38 +148,40 @@ export default function AnalyticsGrid({ cases }: Props) {
         )}
       </div>
 
-      {/* Revenue by Month — Bar */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
-        <h3 className="text-sm font-bold text-slate-900 mb-4">
-          Revenue by Month
-        </h3>
-        <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={revenueData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis
-              dataKey="month"
-              tick={{ fontSize: 12, fill: '#64748b' }}
-              axisLine={{ stroke: '#e2e8f0' }}
-              tickLine={false}
-            />
-            <YAxis
-              tickFormatter={(v) => `$${v.toLocaleString()}`}
-              tick={{ fontSize: 12, fill: '#64748b' }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              formatter={(value) => [`$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 'Revenue']}
-              contentStyle={{
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                fontSize: '13px',
-              }}
-            />
-            <Bar dataKey="revenue" fill="#2563eb" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      {/* Revenue by Month — Bar (admin only) */}
+      {isAdmin && (
+        <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+          <h3 className="text-sm font-bold text-slate-900 mb-4">
+            Revenue by Month
+          </h3>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={revenueData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis
+                dataKey="month"
+                tick={{ fontSize: 12, fill: '#64748b' }}
+                axisLine={{ stroke: '#e2e8f0' }}
+                tickLine={false}
+              />
+              <YAxis
+                tickFormatter={(v) => `$${v.toLocaleString()}`}
+                tick={{ fontSize: 12, fill: '#64748b' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                formatter={(value) => [`$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 'Revenue']}
+                contentStyle={{
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '13px',
+                }}
+              />
+              <Bar dataKey="revenue" fill="#2563eb" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
       {/* Cases by Restoration Type — Horizontal Bar */}
       <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 lg:col-span-2">

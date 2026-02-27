@@ -2,9 +2,10 @@ import { Case } from '@/lib/types';
 
 type Props = {
   cases: Case[];
+  isAdmin?: boolean;
 };
 
-export default function StatsGrid({ cases }: Props) {
+export default function StatsGrid({ cases, isAdmin }: Props) {
   const today = new Date().toISOString().split('T')[0];
 
   const activeCases = cases.filter((c) => c.status !== 'shipped').length;
@@ -21,7 +22,7 @@ export default function StatsGrid({ cases }: Props) {
     (c) => !c.invoiced && c.status === 'shipped'
   ).length;
 
-  const stats = [
+  const allStats = [
     {
       label: 'Active Cases',
       value: activeCases,
@@ -54,11 +55,14 @@ export default function StatsGrid({ cases }: Props) {
       iconBg: 'bg-amber-100',
       trend: `${pendingInvoices} pending invoice${pendingInvoices !== 1 ? 's' : ''}`,
       trendColor: 'text-amber-600',
+      adminOnly: true,
     },
   ];
 
+  const stats = allStats.filter((s) => !s.adminOnly || isAdmin);
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+    <div className={`grid grid-cols-2 sm:grid-cols-2 ${stats.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-3 md:gap-4 mb-6`}>
       {stats.map((stat) => (
         <div
           key={stat.label}

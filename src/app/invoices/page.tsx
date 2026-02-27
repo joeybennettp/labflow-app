@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
 import { Case, Doctor } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
 import StatusBadge from '@/components/StatusBadge';
@@ -21,6 +23,8 @@ type LabSettings = {
 type InvoiceFilter = 'all' | 'pending' | 'invoiced';
 
 export default function InvoicesPage() {
+  const { isAdmin, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [cases, setCases] = useState<Case[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [labSettings, setLabSettings] = useState<LabSettings | null>(null);
@@ -28,6 +32,13 @@ export default function InvoicesPage() {
   const [filter, setFilter] = useState<InvoiceFilter>('all');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [invoiceDoctor, setInvoiceDoctor] = useState('');
+
+  // Redirect non-admins to dashboard
+  useEffect(() => {
+    if (!authLoading && !isAdmin) {
+      router.push('/');
+    }
+  }, [isAdmin, authLoading, router]);
 
   const refreshCases = useCallback(async () => {
     const { data } = await supabase

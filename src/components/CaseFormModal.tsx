@@ -8,6 +8,7 @@ type Props = {
   mode: 'create' | 'edit';
   caseData?: Case;
   doctors: Doctor[];
+  isAdmin?: boolean;
   onSave: (data: CaseFormData) => Promise<void>;
   onClose: () => void;
 };
@@ -64,7 +65,7 @@ const STATUS_OPTIONS: { value: Case['status']; label: string }[] = [
   { value: 'shipped', label: 'Shipped' },
 ];
 
-export default function CaseFormModal({ mode, caseData, doctors, onSave, onClose }: Props) {
+export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave, onClose }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -211,7 +212,7 @@ export default function CaseFormModal({ mode, caseData, doctors, onSave, onClose
         </div>
 
         {/* Row 3: Due Date + Price */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className={`grid grid-cols-1 ${isAdmin ? 'sm:grid-cols-2' : ''} gap-4`}>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Due Date <span className="text-red-500">*</span>
@@ -224,20 +225,22 @@ export default function CaseFormModal({ mode, caseData, doctors, onSave, onClose
               className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Price ($)
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="0.00"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
-            />
-          </div>
+          {isAdmin && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Price ($)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="0.00"
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              />
+            </div>
+          )}
         </div>
 
         {/* Row 4: Status (edit only) + Rush */}

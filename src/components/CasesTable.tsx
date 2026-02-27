@@ -7,6 +7,7 @@ import StatusBadge from './StatusBadge';
 type Props = {
   cases: Case[];
   doctors?: Doctor[];
+  isAdmin?: boolean;
   onRowClick?: (c: Case) => void;
 };
 
@@ -51,7 +52,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function CasesTable({ cases, doctors, onRowClick }: Props) {
+export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Props) {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortColumn>('due');
@@ -83,6 +84,11 @@ export default function CasesTable({ cases, doctors, onRowClick }: Props) {
     setDateFrom('');
     setDateTo('');
   }
+
+  const visibleColumns = useMemo(
+    () => COLUMNS.filter((col) => col.key !== 'price' || isAdmin),
+    [isAdmin]
+  );
 
   const filtered = useMemo(() => {
     let result = [...cases];
@@ -238,7 +244,7 @@ export default function CasesTable({ cases, doctors, onRowClick }: Props) {
         <table className="w-full">
           <thead>
             <tr>
-              {COLUMNS.map((col) => {
+              {visibleColumns.map((col) => {
                 const isActive = sortBy === col.key;
                 const arrow = isActive
                   ? sortDir === 'asc'
@@ -266,7 +272,7 @@ export default function CasesTable({ cases, doctors, onRowClick }: Props) {
             {filtered.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={visibleColumns.length}
                   className="px-4 py-12 text-center text-slate-400 text-sm"
                 >
                   No cases match your filters.
@@ -320,9 +326,11 @@ export default function CasesTable({ cases, doctors, onRowClick }: Props) {
                       {overdue && '⚠ '}
                       {formatDate(c.due)}
                     </td>
-                    <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 text-right font-semibold">
-                      ${Number(c.price).toFixed(2)}
-                    </td>
+                    {isAdmin && (
+                      <td className="hidden md:table-cell px-4 py-3.5 text-sm text-slate-700 border-b border-slate-100 text-right font-semibold">
+                        ${Number(c.price).toFixed(2)}
+                      </td>
+                    )}
                   </tr>
                 );
               })
