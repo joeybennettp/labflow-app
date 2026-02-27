@@ -194,7 +194,7 @@ export default function DashboardPage() {
             <>
               <StatsGrid cases={cases} />
               <AnalyticsGrid cases={cases} />
-              <CasesTable cases={cases} onRowClick={handleRowClick} />
+              <CasesTable cases={cases} doctors={doctors} onRowClick={handleRowClick} />
             </>
           )}
         </main>

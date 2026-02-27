@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Case, SortColumn, SortDirection } from '@/lib/types';
+import { Case, Doctor, SortColumn, SortDirection } from '@/lib/types';
 import StatusBadge from './StatusBadge';
 
 type Props = {
   cases: Case[];
+  doctors?: Doctor[];
   onRowClick?: (c: Case) => void;
 };
 
@@ -50,11 +51,14 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function CasesTable({ cases, onRowClick }: Props) {
+export default function CasesTable({ cases, doctors, onRowClick }: Props) {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortColumn>('due');
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
+  const [doctorFilter, setDoctorFilter] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   function handleSort(column: SortColumn) {
     if (sortBy === column) {
@@ -63,6 +67,21 @@ export default function CasesTable({ cases, onRowClick }: Props) {
       setSortBy(column);
       setSortDir('asc');
     }
+  }
+
+  const hasActiveFilters =
+    search !== '' ||
+    filter !== 'all' ||
+    doctorFilter !== 'all' ||
+    dateFrom !== '' ||
+    dateTo !== '';
+
+  function clearFilters() {
+    setSearch('');
+    setFilter('all');
+    setDoctorFilter('all');
+    setDateFrom('');
+    setDateTo('');
   }
 
   const filtered = useMemo(() => {
@@ -83,6 +102,19 @@ export default function CasesTable({ cases, onRowClick }: Props) {
           c.type.toLowerCase().includes(q) ||
           (c.doctors?.name || '').toLowerCase().includes(q)
       );
+    }
+
+    // Doctor filter
+    if (doctorFilter !== 'all') {
+      result = result.filter((c) => c.doctor_id === doctorFilter);
+    }
+
+    // Date range filter (by due date)
+    if (dateFrom) {
+      result = result.filter((c) => c.due >= dateFrom);
+    }
+    if (dateTo) {
+      result = result.filter((c) => c.due <= dateTo);
     }
 
     // Sort — rush cases always float to top
@@ -121,36 +153,83 @@ export default function CasesTable({ cases, onRowClick }: Props) {
     });
 
     return result;
-  }, [cases, filter, search, sortBy, sortDir]);
+  }, [cases, filter, search, doctorFilter, dateFrom, dateTo, sortBy, sortDir]);
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
       {/* Header with filters and search */}
-      <div className="p-3 md:p-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-3 md:gap-4">
-        <span className="text-[0.9375rem] font-bold text-slate-900">
-          Case Tracker
-        </span>
+      <div className="p-3 md:p-4 border-b border-slate-200 space-y-3">
+        {/* Row 1: Title, search, status tabs */}
+        <div className="flex items-center justify-between flex-wrap gap-3 md:gap-4">
+          <span className="text-[0.9375rem] font-bold text-slate-900">
+            Case Tracker
+          </span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <input
+              type="text"
+              placeholder="Search cases..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm w-full md:w-48 focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            />
+            {FILTER_OPTIONS.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`px-2.5 md:px-3 py-1.5 rounded-lg text-[0.75rem] md:text-[0.8125rem] font-medium border transition-colors ${
+                  filter === f.key
+                    ? 'bg-brand-600 text-white border-brand-600'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2: Doctor, date range, clear */}
         <div className="flex items-center gap-2 flex-wrap">
-          <input
-            type="text"
-            placeholder="Search cases..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm w-full md:w-48 focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
-          />
-          {FILTER_OPTIONS.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={`px-2.5 md:px-3 py-1.5 rounded-lg text-[0.75rem] md:text-[0.8125rem] font-medium border transition-colors ${
-                filter === f.key
-                  ? 'bg-brand-600 text-white border-brand-600'
-                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-              }`}
+          {doctors && doctors.length > 0 && (
+            <select
+              value={doctorFilter}
+              onChange={(e) => setDoctorFilter(e.target.value)}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
             >
-              {f.label}
+              <option value="all">All Doctors</option>
+              {doctors.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-500 font-medium">From</span>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="px-2 py-1.5 rounded-lg border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-slate-500 font-medium">To</span>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="px-2 py-1.5 rounded-lg border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            />
+          </div>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-2.5 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:underline transition-colors"
+            >
+              Clear Filters
             </button>
-          ))}
+          )}
         </div>
       </div>
 
