@@ -11,7 +11,7 @@ const NAV_ITEMS = [
 ];
 
 const ACCOUNT_ITEMS = [
-  { icon: '⚙️', label: 'Settings', href: '/settings', disabled: true },
+  { icon: '⚙️', label: 'Settings', href: '/settings', disabled: false },
 ];
 
 export default function Sidebar() {
