@@ -27,6 +27,7 @@ export default function InvoicesPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<InvoiceFilter>('all');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [invoiceDoctor, setInvoiceDoctor] = useState('');
 
   const refreshCases = useCallback(async () => {
     const { data } = await supabase
@@ -74,11 +75,18 @@ export default function InvoicesPage() {
     .filter((c) => c.invoiced)
     .reduce((sum, c) => sum + Number(c.price), 0);
 
+  // Doctors that have pending cases
   const pendingCases = cases.filter((c) => !c.invoiced);
+  const doctorsWithPending = doctors.filter((d) =>
+    pendingCases.some((c) => c.doctor_id === d.id)
+  );
 
   function handleGeneratePDF() {
-    if (pendingCases.length === 0 || !labSettings) return;
-    generateInvoicePDF(pendingCases, labSettings, doctors);
+    if (!invoiceDoctor || !labSettings) return;
+    const doctorCases = pendingCases.filter((c) => c.doctor_id === invoiceDoctor);
+    if (doctorCases.length === 0) return;
+    const doctor = doctors.find((d) => d.id === invoiceDoctor);
+    generateInvoicePDF(doctorCases, labSettings, doctor ? [doctor] : []);
   }
 
   const FILTERS: { key: InvoiceFilter; label: string }[] = [
@@ -103,14 +111,27 @@ export default function InvoicesPage() {
               Invoices
             </h1>
           </div>
-          <button
-            onClick={handleGeneratePDF}
-            disabled={pendingCases.length === 0 || !labSettings}
-            className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            title={pendingCases.length === 0 ? 'No pending cases to invoice' : 'Generate PDF for all pending cases'}
-          >
-            Generate Invoice PDF
-          </button>
+          <div className="flex items-center gap-2">
+            <select
+              value={invoiceDoctor}
+              onChange={(e) => setInvoiceDoctor(e.target.value)}
+              className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            >
+              <option value="">Select Doctor...</option>
+              {doctorsWithPending.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name} ({pendingCases.filter((c) => c.doctor_id === d.id).length} pending)
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleGeneratePDF}
+              disabled={!invoiceDoctor || !labSettings}
+              className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              Generate PDF
+            </button>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-7">
           {loading ? (
