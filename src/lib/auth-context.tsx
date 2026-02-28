@@ -77,14 +77,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         if (!mounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
 
         if (currentUser) {
-          // AWAIT fetchRole so the correct role is set before rendering
-          await fetchRole(currentUser.id, currentUser.email ?? undefined);
+          // Fire in background — cached role renders instantly,
+          // fetchRole updates it (and the cache) once it resolves.
+          fetchRole(currentUser.id, currentUser.email ?? undefined);
         } else {
           setRole('tech');
           setCachedRole('tech');
