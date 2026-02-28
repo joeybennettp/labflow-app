@@ -1,5 +1,6 @@
 'use client';
 
+import { Building2, Phone, Mail } from 'lucide-react';
 import { PortalCase } from '@/lib/types';
 import Modal from './Modal';
 import StatusBadge from './StatusBadge';
@@ -9,6 +10,9 @@ import CaseMessages from './CaseMessages';
 type Props = {
   caseData: PortalCase;
   onClose: () => void;
+  labName?: string;
+  labPhone?: string;
+  labEmail?: string;
 };
 
 const STATUS_FLOW: PortalCase['status'][] = [
@@ -47,7 +51,7 @@ function formatTimestamp(ts: string): string {
   });
 }
 
-export default function PortalCaseDetail({ caseData, onClose }: Props) {
+export default function PortalCaseDetail({ caseData, onClose, labName, labPhone, labEmail }: Props) {
   const currentIndex = STATUS_FLOW.indexOf(caseData.status);
   const isOverdue =
     caseData.status !== 'shipped' &&
@@ -149,6 +153,39 @@ export default function PortalCaseDetail({ caseData, onClose }: Props) {
 
       {/* Messages */}
       <CaseMessages caseId={caseData.id} role="doctor" />
+
+      {/* Lab contact info */}
+      {labName && (
+        <div className="mt-5">
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+            Lab
+          </div>
+          <div className="bg-slate-50 rounded-lg border border-slate-100 p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <span className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+              <Building2 size={14} className="text-brand-600" />
+              {labName}
+            </span>
+            {labPhone && (
+              <a
+                href={`tel:${labPhone}`}
+                className="text-sm text-slate-500 hover:text-brand-600 flex items-center gap-1.5 transition-colors"
+              >
+                <Phone size={13} />
+                {labPhone}
+              </a>
+            )}
+            {labEmail && (
+              <a
+                href={`mailto:${labEmail}`}
+                className="text-sm text-slate-500 hover:text-brand-600 flex items-center gap-1.5 transition-colors"
+              >
+                <Mail size={13} />
+                {labEmail}
+              </a>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Timestamps */}
       <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400">

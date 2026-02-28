@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Clock, CheckCircle, DollarSign } from 'lucide-react';
+import { Clock, CheckCircle, DollarSign, Building2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { PortalInvoiceCase } from '@/lib/types';
@@ -24,6 +24,7 @@ export default function PortalInvoicesPage() {
   const [cases, setCases] = useState<PortalInvoiceCase[]>([]);
   const [doctorName, setDoctorName] = useState('');
   const [practiceName, setPracticeName] = useState('');
+  const [labName, setLabName] = useState('');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<InvoiceFilter>('all');
 
@@ -43,6 +44,14 @@ export default function PortalInvoicesPage() {
           setPracticeName(doc.practice);
         }
       }
+
+      // Fetch lab info
+      const { data: labData } = await supabase
+        .from('lab_settings')
+        .select('lab_name')
+        .limit(1)
+        .single();
+      if (labData) setLabName(labData.lab_name || '');
 
       // Fetch cases with financial data — RLS auto-filters to this doctor
       const { data } = await supabase
@@ -92,9 +101,20 @@ export default function PortalInvoicesPage() {
             {/* Page heading */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-slate-900">Invoices</h1>
-              {practiceName && (
-                <p className="text-sm text-slate-500 mt-1">{practiceName}</p>
-              )}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mt-1">
+                {practiceName && (
+                  <p className="text-sm text-slate-500">{practiceName}</p>
+                )}
+                {labName && practiceName && (
+                  <span className="hidden sm:inline text-slate-300">·</span>
+                )}
+                {labName && (
+                  <p className="text-sm text-slate-400 flex items-center gap-1">
+                    <Building2 size={13} />
+                    {labName}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Summary cards */}
