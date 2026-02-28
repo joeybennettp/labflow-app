@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu } from 'lucide-react';
+import { Menu, Pencil, Trash2, Mail, Phone } from 'lucide-react';
 
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -195,14 +195,14 @@ export default function DoctorsPage() {
                           title="Edit doctor"
                           className="w-8 h-8 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600 flex items-center justify-center text-sm transition-colors"
                         >
-                          ✏️
+                          <Pencil size={14} />
                         </button>
                         <button
                           onClick={() => handleDeleteDoctor(doc)}
                           title="Delete doctor"
                           className="w-8 h-8 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-sm transition-colors"
                         >
-                          🗑️
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
@@ -241,13 +241,13 @@ export default function DoctorsPage() {
                     <div className="border-t border-slate-100 pt-3 space-y-1.5">
                       {doc.email && (
                         <div className="flex items-center gap-2 text-xs text-slate-500">
-                          <span>📧</span>
+                          <Mail size={13} className="text-slate-400 shrink-0" />
                           <span className="truncate">{doc.email}</span>
                         </div>
                       )}
                       {doc.phone && (
                         <div className="flex items-center gap-2 text-xs text-slate-500">
-                          <span>📞</span>
+                          <Phone size={13} className="text-slate-400 shrink-0" />
                           <span>{doc.phone}</span>
                         </div>
                       )}

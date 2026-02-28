@@ -1,5 +1,6 @@
 'use client';
 
+import { Trash2, Pencil } from 'lucide-react';
 import { Case } from '@/lib/types';
 import Modal from './Modal';
 import StatusBadge from './StatusBadge';
@@ -83,13 +84,13 @@ export default function CaseDetailModal({
         onClick={() => onDelete(caseData.id)}
         className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
       >
-        🗑️ Delete
+        <Trash2 size={14} className="inline -mt-0.5" /> Delete
       </button>
       <button
         onClick={onEdit}
         className="px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors"
       >
-        ✏️ Edit Case
+        <Pencil size={14} className="inline -mt-0.5" /> Edit Case
       </button>
       {backwardMove && (
         <button
