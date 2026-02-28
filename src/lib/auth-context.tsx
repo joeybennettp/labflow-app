@@ -29,14 +29,26 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+// Cache role in localStorage for instant loads
+function getCachedRole(): UserRole {
+  if (typeof window === 'undefined') return 'tech';
+  return (localStorage.getItem('labflow-role') as UserRole) || 'tech';
+}
+
+function setCachedRole(role: UserRole) {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('labflow-role', role);
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<UserRole>('tech');
+  const [role, setRole] = useState<UserRole>(getCachedRole);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
-  // Fetch the user's role from user_profiles
+  // Fetch the user's role from user_profiles (runs in background)
   async function fetchRole(userId: string) {
     try {
       const { data } = await supabase
@@ -45,8 +57,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('id', userId)
         .single();
 
-      // Default to 'tech' if no profile exists (safe default)
-      setRole((data?.role as UserRole) || 'tech');
+      const newRole = (data?.role as UserRole) || 'tech';
+      setRole(newRole);
+      setCachedRole(newRole);
     } catch {
       setRole('tech');
     }
@@ -55,29 +68,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // Use onAuthStateChange as the single source of truth.
-    // It fires INITIAL_SESSION synchronously on registration.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (!mounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
+
+        // Stop loading immediately — use cached role for now.
+        // fetchRole will update it in the background if it changed.
+        setLoading(false);
+
         if (currentUser) {
-          await fetchRole(currentUser.id);
+          fetchRole(currentUser.id);
         } else {
           setRole('tech');
+          setCachedRole('tech');
         }
-        setLoading(false);
       }
     );
 
-    // Safety timeout — if auth never resolves (broken lock, etc.),
-    // stop loading after 3 seconds so the app isn't stuck forever.
+    // Safety timeout — if auth never resolves, stop loading after 2s.
     const timeout = setTimeout(() => {
-      if (mounted && loading) {
-        setLoading(false);
-      }
-    }, 3000);
+      if (mounted) setLoading(false);
+    }, 2000);
 
     return () => {
       mounted = false;
@@ -108,6 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     await supabase.auth.signOut();
     setRole('tech');
+    setCachedRole('tech');
     router.push('/login');
   }
 
