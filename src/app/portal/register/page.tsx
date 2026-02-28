@@ -73,9 +73,7 @@ export default function DoctorRegisterPage() {
     });
 
     if (linkError) {
-      setError(
-        `Link error: ${linkError.message || linkError.code || JSON.stringify(linkError)}`
-      );
+      setError('Account created but failed to link to your doctor record. Please contact your lab.');
       setLoading(false);
       return;
     }
