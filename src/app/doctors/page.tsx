@@ -167,8 +167,23 @@ export default function DoctorsPage() {
                         <div className="text-sm font-bold text-slate-900 truncate">
                           {doc.name}
                         </div>
-                        <div className="text-xs text-slate-500 truncate">
-                          {doc.practice}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 truncate">
+                            {doc.practice}
+                          </span>
+                          {doc.auth_user_id ? (
+                            <span className="px-2 py-0.5 text-[0.625rem] font-bold bg-green-100 text-green-700 rounded-full shrink-0">
+                              Portal Active
+                            </span>
+                          ) : doc.email ? (
+                            <span className="px-2 py-0.5 text-[0.625rem] font-bold bg-slate-100 text-slate-500 rounded-full shrink-0">
+                              Not Registered
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 text-[0.625rem] font-bold bg-amber-100 text-amber-600 rounded-full shrink-0">
+                              No Email
+                            </span>
+                          )}
                         </div>
                       </div>
                       {/* Edit / Delete buttons */}

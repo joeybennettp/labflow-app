@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 
 export default function LoginPage() {
@@ -94,6 +95,16 @@ export default function LoginPage() {
         <p className="text-center text-xs text-slate-400 mt-6">
           Contact your lab administrator for account access.
         </p>
+
+        <div className="text-center mt-4 pt-4 border-t border-slate-100">
+          <p className="text-xs text-slate-500 mb-2">Are you a referring doctor?</p>
+          <Link
+            href="/portal/register"
+            className="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+          >
+            Set up your Doctor Portal account →
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -5,12 +5,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from './supabase';
 import type { User } from '@supabase/supabase-js';
 
-type UserRole = 'admin' | 'tech';
+type UserRole = 'admin' | 'tech' | 'doctor';
 
 type AuthContextType = {
   user: User | null;
   role: UserRole;
   isAdmin: boolean;
+  isDoctor: boolean;
+  doctorId: string | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
@@ -20,6 +22,8 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   role: 'tech',
   isAdmin: false,
+  isDoctor: false,
+  doctorId: null,
   loading: true,
   signIn: async () => null,
   signOut: async () => {},
@@ -41,9 +45,25 @@ function setCachedRole(role: UserRole) {
   }
 }
 
+function getCachedDoctorId(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('labflow-doctor-id');
+}
+
+function setCachedDoctorId(id: string | null) {
+  if (typeof window !== 'undefined') {
+    if (id) {
+      localStorage.setItem('labflow-doctor-id', id);
+    } else {
+      localStorage.removeItem('labflow-doctor-id');
+    }
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(getCachedRole);
+  const [doctorId, setDoctorId] = useState<string | null>(getCachedDoctorId);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -79,6 +99,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const newRole = (data.role as UserRole) || 'tech';
       setRole(newRole);
       setCachedRole(newRole);
+
+      // If doctor, fetch the linked doctor record ID
+      if (newRole === 'doctor') {
+        const { data: docData } = await supabase
+          .from('doctors')
+          .select('id')
+          .eq('auth_user_id', userId)
+          .single();
+        if (docData) {
+          setDoctorId(docData.id);
+          setCachedDoctorId(docData.id);
+        }
+      } else {
+        setDoctorId(null);
+        setCachedDoctorId(null);
+      }
     } catch {
       // Network error — keep cached role, don't overwrite
     }
@@ -100,6 +136,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setRole('tech');
           setCachedRole('tech');
+          setDoctorId(null);
+          setCachedDoctorId(null);
         }
 
         setLoading(false);
@@ -123,13 +161,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (loading) return;
 
     const isLoginPage = pathname === '/login';
+    const isRegisterPage = pathname === '/portal/register';
+    const isPortalPage = pathname.startsWith('/portal');
 
-    if (!user && !isLoginPage) {
+    if (!user && !isLoginPage && !isRegisterPage) {
       router.push('/login');
     } else if (user && isLoginPage) {
+      // Role-based redirect from login
+      router.push(role === 'doctor' ? '/portal' : '/');
+    } else if (user && role === 'doctor' && !isPortalPage) {
+      // Doctors can only access /portal/*
+      router.push('/portal');
+    } else if (user && role !== 'doctor' && isPortalPage && !isRegisterPage) {
+      // Non-doctors should not be on /portal (but registration is public)
       router.push('/');
     }
-  }, [user, loading, pathname, router]);
+  }, [user, role, loading, pathname, router]);
 
   async function signIn(email: string, password: string): Promise<string | null> {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -141,10 +188,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setRole('tech');
     setCachedRole('tech');
+    setDoctorId(null);
+    setCachedDoctorId(null);
     router.push('/login');
   }
 
   const isAdmin = role === 'admin';
+  const isDoctor = role === 'doctor';
 
   // Show loading spinner while checking auth + role
   if (loading) {
@@ -156,7 +206,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, isAdmin, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, role, isAdmin, isDoctor, doctorId, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
