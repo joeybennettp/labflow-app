@@ -40,7 +40,11 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [preview, setPreview] = useState<{
+    url: string;
+    fileType: string;
+    fileName: string;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchAttachments = useCallback(async () => {
@@ -177,7 +181,11 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
       return;
     }
 
-    setPreviewUrl(data.signedUrl);
+    setPreview({
+      url: data.signedUrl,
+      fileType: attachment.file_type,
+      fileName: attachment.file_name,
+    });
   }
 
   function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
@@ -273,26 +281,23 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
               key={att.id}
               className="flex items-center gap-3 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100 group"
             >
-              {/* Thumbnail or icon */}
-              {isImage(att.file_type) ? (
+              {/* Thumbnail or icon — clickable to preview */}
+              <button
+                onClick={() => handlePreview(att)}
+                className="w-10 h-10 bg-white border border-slate-200 rounded-md flex items-center justify-center overflow-hidden shrink-0 hover:border-brand-300 transition-colors"
+                title="Click to preview"
+              >
+                {getFileIcon(att.file_type)}
+              </button>
+
+              {/* File info — name is clickable to preview */}
+              <div className="min-w-0 flex-1">
                 <button
                   onClick={() => handlePreview(att)}
-                  className="w-10 h-10 bg-white border border-slate-200 rounded-md flex items-center justify-center overflow-hidden shrink-0 hover:border-brand-300 transition-colors"
-                  title="Click to preview"
+                  className="text-sm font-medium text-slate-800 truncate block max-w-full text-left hover:text-brand-600 transition-colors"
                 >
-                  <Image size={18} className="text-blue-500" />
-                </button>
-              ) : (
-                <div className="w-10 h-10 bg-white border border-slate-200 rounded-md flex items-center justify-center shrink-0">
-                  {getFileIcon(att.file_type)}
-                </div>
-              )}
-
-              {/* File info */}
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium text-slate-800 truncate">
                   {att.file_name}
-                </div>
+                </button>
                 <div className="text-xs text-slate-400 flex items-center gap-1.5">
                   {formatFileSize(att.file_size)} · {new Date(att.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   <span className={`px-1.5 py-0.5 rounded text-[0.6rem] font-bold ${
@@ -330,25 +335,75 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
         </div>
       )}
 
-      {/* Image preview overlay */}
-      {previewUrl && (
+      {/* File preview overlay */}
+      {preview && (
         <div
           className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4"
-          onClick={() => setPreviewUrl(null)}
+          onClick={() => setPreview(null)}
         >
-          <div className="relative max-w-3xl max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setPreviewUrl(null)}
-              className="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors z-10"
-            >
-              <X size={16} />
-            </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="max-w-full max-h-[80vh] rounded-lg shadow-2xl object-contain"
-            />
+          <div
+            className={`relative ${
+              preview.fileType === 'application/pdf'
+                ? 'w-full max-w-4xl h-[85vh]'
+                : 'max-w-3xl max-h-[80vh]'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header bar */}
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-white text-sm font-medium truncate mr-4">
+                {preview.fileName}
+              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={preview.url}
+                  download={preview.fileName}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
+                  title="Download"
+                >
+                  <Download size={14} />
+                </a>
+                <button
+                  onClick={() => setPreview(null)}
+                  className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
+                  title="Close"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            {isImage(preview.fileType) ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={preview.url}
+                alt="Preview"
+                className="max-w-full max-h-[75vh] rounded-lg shadow-2xl object-contain mx-auto"
+              />
+            ) : preview.fileType === 'application/pdf' ? (
+              <iframe
+                src={preview.url}
+                title="PDF Preview"
+                className="w-full h-full rounded-lg shadow-2xl bg-white"
+              />
+            ) : (
+              <div className="bg-white rounded-lg shadow-2xl p-8 text-center">
+                <File size={48} className="mx-auto text-slate-300 mb-3" />
+                <p className="text-sm text-slate-500 mb-3">Preview not available for this file type.</p>
+                <a
+                  href={preview.url}
+                  download={preview.fileName}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-brand-600 font-semibold hover:underline"
+                >
+                  Download to view
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
