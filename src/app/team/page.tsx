@@ -20,6 +20,7 @@ export default function TeamPage() {
   const router = useRouter();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Confirmation modal state
@@ -37,12 +38,14 @@ export default function TeamPage() {
 
   // Fetch all team members
   const fetchMembers = useCallback(async () => {
+    setFetchError(null);
     const { data, error } = await supabase
       .from('user_profiles')
       .select('*')
       .order('created_at', { ascending: true });
 
     if (error) {
+      setFetchError(`${error.code}: ${error.message}`);
       console.error('fetchMembers error:', error);
     }
 
@@ -125,6 +128,13 @@ export default function TeamPage() {
             </div>
           ) : (
             <>
+              {/* Error display */}
+              {fetchError && (
+                <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  Error loading team: {fetchError}
+                </div>
+              )}
+
               {/* Summary */}
               <div className="mb-6 text-sm text-slate-500">
                 {members.length} team member{members.length !== 1 ? 's' : ''} ·{' '}
