@@ -5,6 +5,7 @@ import { Case } from '@/lib/types';
 import Modal from './Modal';
 import StatusBadge from './StatusBadge';
 import CaseAttachments from './CaseAttachments';
+import CaseMessages from './CaseMessages';
 
 type Props = {
   caseData: Case;
@@ -213,6 +214,9 @@ export default function CaseDetailModal({
 
       {/* Attachments */}
       <CaseAttachments caseId={caseData.id} />
+
+      {/* Messages */}
+      <CaseMessages caseId={caseData.id} role="lab" />
 
       {/* Timestamps */}
       <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400">

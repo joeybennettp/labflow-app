@@ -53,5 +53,15 @@ export type CaseAttachment = {
   created_at: string;
 };
 
+export type CaseMessage = {
+  id: string;
+  case_id: string;
+  sender_id: string;
+  sender_role: 'lab' | 'doctor';
+  sender_name: string;
+  message: string;
+  created_at: string;
+};
+
 export type SortColumn = 'case_number' | 'patient' | 'doctor' | 'type' | 'status' | 'due' | 'price';
 export type SortDirection = 'asc' | 'desc';
