@@ -8,9 +8,14 @@ type Props = {
 export default function StatsGrid({ cases, isAdmin }: Props) {
   const today = new Date().toISOString().split('T')[0];
 
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
   const activeCases = cases.filter((c) => c.status !== 'shipped').length;
   const overdue = cases.filter(
     (c) => c.status !== 'shipped' && c.due < today
+  ).length;
+  const dueSoon = cases.filter(
+    (c) => c.status !== 'shipped' && c.due >= today && c.due <= tomorrow
   ).length;
   const readyShipped = cases.filter(
     (c) => c.status === 'ready' || c.status === 'shipped'
@@ -36,8 +41,8 @@ export default function StatsGrid({ cases, isAdmin }: Props) {
       value: overdue,
       icon: '⚠️',
       iconBg: 'bg-red-100',
-      trend: overdue > 0 ? 'Need attention' : 'All on track',
-      trendColor: overdue > 0 ? 'text-red-600' : 'text-green-600',
+      trend: overdue > 0 ? 'Need attention' : dueSoon > 0 ? `${dueSoon} due soon` : 'All on track',
+      trendColor: overdue > 0 ? 'text-red-600' : dueSoon > 0 ? 'text-amber-600' : 'text-green-600',
       valueColor: overdue > 0 ? 'text-red-600' : undefined,
     },
     {

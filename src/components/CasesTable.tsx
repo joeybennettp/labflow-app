@@ -13,6 +13,7 @@ type Props = {
 
 const FILTER_OPTIONS: { key: string; label: string }[] = [
   { key: 'all', label: 'All' },
+  { key: 'overdue', label: 'Overdue' },
   { key: 'received', label: 'Received' },
   { key: 'in_progress', label: 'In Progress' },
   { key: 'quality_check', label: 'QC Check' },
@@ -41,6 +42,13 @@ const COLUMNS: { key: SortColumn; label: string; hideOnMobile?: boolean }[] = [
 function isOverdue(due: string, status: string): boolean {
   if (status === 'shipped') return false;
   return due < new Date().toISOString().split('T')[0];
+}
+
+function isDueSoon(due: string, status: string): boolean {
+  if (status === 'shipped') return false;
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  return due >= today && due <= tomorrow;
 }
 
 function formatDate(dateStr: string): string {
@@ -94,7 +102,9 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
     let result = [...cases];
 
     // Status filter
-    if (filter !== 'all') {
+    if (filter === 'overdue') {
+      result = result.filter((c) => isOverdue(c.due, c.status));
+    } else if (filter !== 'all') {
       result = result.filter((c) => c.status === filter);
     }
 
@@ -281,12 +291,17 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
             ) : (
               filtered.map((c) => {
                 const overdue = isOverdue(c.due, c.status);
+                const dueSoon = !overdue && isDueSoon(c.due, c.status);
                 return (
                   <tr
                     key={c.id}
                     onClick={() => onRowClick?.(c)}
                     className={`hover:bg-slate-50 transition-colors cursor-pointer ${
-                      c.rush ? 'bg-red-50 hover:bg-red-100' : ''
+                      overdue
+                        ? 'bg-red-50 hover:bg-red-100'
+                        : c.rush
+                          ? 'bg-red-50 hover:bg-red-100'
+                          : ''
                     }`}
                   >
                     <td className="px-3 md:px-4 py-3 md:py-3.5 text-sm border-b border-slate-100">
@@ -320,10 +335,13 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
                       className={`px-3 md:px-4 py-3 md:py-3.5 text-sm border-b border-slate-100 ${
                         overdue
                           ? 'text-red-600 font-semibold'
-                          : 'text-slate-700'
+                          : dueSoon
+                            ? 'text-amber-600 font-semibold'
+                            : 'text-slate-700'
                       }`}
                     >
                       {overdue && '⚠ '}
+                      {dueSoon && '⏰ '}
                       {formatDate(c.due)}
                     </td>
                     {isAdmin && (
