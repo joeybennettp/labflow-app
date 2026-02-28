@@ -42,6 +42,7 @@ export default function TeamPage() {
     const { data, error } = await supabase
       .from('user_profiles')
       .select('*')
+      .in('role', ['admin', 'tech'])
       .order('created_at', { ascending: true });
 
     if (error) {
