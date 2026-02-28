@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, ClipboardList, CalendarClock, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { PortalCase } from '@/lib/types';
@@ -18,6 +18,24 @@ const TAB_LABELS: Record<string, string> = {
   ready: 'Ready',
   shipped: 'Shipped',
 };
+
+const STATUS_ORDER: Record<string, number> = {
+  received: 1,
+  in_progress: 2,
+  quality_check: 3,
+  ready: 4,
+  shipped: 5,
+};
+
+type SortKey = 'case_number' | 'patient' | 'type' | 'status' | 'due';
+
+const PORTAL_COLUMNS: { key: SortKey; label: string; hideOnMobile?: boolean }[] = [
+  { key: 'case_number', label: 'Case #' },
+  { key: 'patient', label: 'Patient' },
+  { key: 'type', label: 'Restoration', hideOnMobile: true },
+  { key: 'status', label: 'Status' },
+  { key: 'due', label: 'Due Date', hideOnMobile: true },
+];
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00');
@@ -39,6 +57,10 @@ export default function PortalPage() {
   // Filters
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  // Sorting
+  const [sortBy, setSortBy] = useState<SortKey>('due');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
     if (authLoading) return;
@@ -71,9 +93,30 @@ export default function PortalPage() {
     fetchData();
   }, [doctorId, authLoading]);
 
-  const activeCases = cases.filter((c) => c.status !== 'shipped').length;
+  // Computed stats
+  const today = new Date().toISOString().split('T')[0];
+  const sevenDaysOut = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
 
-  // Filtered cases
+  const activeCases = cases.filter((c) => c.status !== 'shipped').length;
+  const inProgressCount = cases.filter((c) => c.status === 'in_progress').length;
+  const dueThisWeek = cases.filter(
+    (c) => c.status !== 'shipped' && c.due >= today && c.due <= sevenDaysOut
+  ).length;
+  const overdueCount = cases.filter(
+    (c) => c.status !== 'shipped' && c.due < today
+  ).length;
+
+  // Sort handler
+  function handleSort(column: SortKey) {
+    if (sortBy === column) {
+      setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortBy(column);
+      setSortDir('asc');
+    }
+  }
+
+  // Filtered + sorted cases
   const filteredCases = useMemo(() => {
     let result = cases;
 
@@ -91,10 +134,31 @@ export default function PortalPage() {
       );
     }
 
-    return result;
-  }, [cases, statusFilter, search]);
+    // Sort
+    const dir = sortDir === 'asc' ? 1 : -1;
+    result = [...result].sort((a, b) => {
+      // Rush cases float to top
+      if (a.rush && !b.rush) return -1;
+      if (!a.rush && b.rush) return 1;
 
-  const today = new Date().toISOString().split('T')[0];
+      switch (sortBy) {
+        case 'case_number':
+          return (parseInt(a.case_number.replace('C-', '')) - parseInt(b.case_number.replace('C-', ''))) * dir;
+        case 'patient':
+          return a.patient.localeCompare(b.patient) * dir;
+        case 'type':
+          return a.type.localeCompare(b.type) * dir;
+        case 'status':
+          return ((STATUS_ORDER[a.status] || 0) - (STATUS_ORDER[b.status] || 0)) * dir;
+        case 'due':
+          return (a.due < b.due ? -1 : a.due > b.due ? 1 : 0) * dir;
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [cases, statusFilter, search, sortBy, sortDir]);
 
   return (
     <div className="flex flex-col h-screen bg-slate-50">
@@ -107,18 +171,83 @@ export default function PortalPage() {
           </div>
         ) : (
           <>
+            {/* Welcome greeting */}
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-slate-900">
+                Welcome back, Dr. {doctorName.split(' ').pop() || doctorName}
+              </h1>
+              {practiceName && (
+                <p className="text-sm text-slate-500 mt-1">{practiceName}</p>
+              )}
+            </div>
+
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-6 max-w-md">
-              <div className="bg-white border border-slate-200 rounded-lg p-4">
-                <div className="text-2xl font-bold text-slate-900">{activeCases}</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-1">
-                  Active Cases
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+              {/* Active Cases */}
+              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className="text-2xl md:text-3xl font-extrabold tracking-tight leading-none text-slate-900">
+                    {activeCases}
+                  </div>
+                  <div className="text-sm text-slate-500 mt-1">Active Cases</div>
+                  <div className="text-xs font-semibold mt-2 text-blue-600">
+                    {inProgressCount} in progress
+                  </div>
+                </div>
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
+                  <ClipboardList size={20} />
                 </div>
               </div>
-              <div className="bg-white border border-slate-200 rounded-lg p-4">
-                <div className="text-2xl font-bold text-slate-900">{cases.length}</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-1">
-                  Total Cases
+
+              {/* Due This Week */}
+              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className="text-2xl md:text-3xl font-extrabold tracking-tight leading-none text-slate-900">
+                    {dueThisWeek}
+                  </div>
+                  <div className="text-sm text-slate-500 mt-1">Due This Week</div>
+                  <div className="text-xs font-semibold mt-2 text-amber-600">
+                    {dueThisWeek > 0 ? 'Upcoming deadlines' : 'Nothing due soon'}
+                  </div>
+                </div>
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+                  <CalendarClock size={20} />
+                </div>
+              </div>
+
+              {/* Overdue */}
+              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className={`text-2xl md:text-3xl font-extrabold tracking-tight leading-none ${
+                    overdueCount > 0 ? 'text-red-600' : 'text-slate-900'
+                  }`}>
+                    {overdueCount}
+                  </div>
+                  <div className="text-sm text-slate-500 mt-1">Overdue</div>
+                  <div className={`text-xs font-semibold mt-2 ${
+                    overdueCount > 0 ? 'text-red-600' : 'text-green-600'
+                  }`}>
+                    {overdueCount > 0 ? 'Need attention' : 'All on track'}
+                  </div>
+                </div>
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-red-100 text-red-600">
+                  <AlertTriangle size={20} />
+                </div>
+              </div>
+
+              {/* Total Cases */}
+              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className="text-2xl md:text-3xl font-extrabold tracking-tight leading-none text-slate-900">
+                    {cases.length}
+                  </div>
+                  <div className="text-sm text-slate-500 mt-1">Total Cases</div>
+                  <div className="text-xs font-semibold mt-2 text-slate-500">
+                    {cases.filter((c) => c.status === 'shipped').length} completed
+                  </div>
+                </div>
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 text-slate-600">
+                  <CheckCircle size={20} />
                 </div>
               </div>
             </div>
@@ -130,7 +259,7 @@ export default function PortalPage() {
                 placeholder="Search cases..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 max-w-sm px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                className="flex-1 sm:max-w-md px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
               />
             </div>
 
@@ -156,31 +285,42 @@ export default function PortalPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                        Case #
-                      </th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                        Patient
-                      </th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">
-                        Restoration
-                      </th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                        Status
-                      </th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">
-                        Due Date
-                      </th>
+                    <tr>
+                      {PORTAL_COLUMNS.map((col) => {
+                        const isActive = sortBy === col.key;
+                        const arrow = isActive ? (sortDir === 'asc' ? ' \u25B2' : ' \u25BC') : '';
+                        return (
+                          <th
+                            key={col.key}
+                            onClick={() => handleSort(col.key)}
+                            className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide bg-slate-50 border-b border-slate-200 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
+                              isActive ? 'text-brand-600' : 'text-slate-500'
+                            } ${col.hideOnMobile ? 'hidden sm:table-cell' : ''}`}
+                          >
+                            {col.label}
+                            <span className="text-[0.625rem] ml-0.5">{arrow}</span>
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody>
                     {filteredCases.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="text-center py-12 text-slate-400">
-                          {cases.length === 0
-                            ? 'No cases yet. Your lab will add cases as they come in.'
-                            : 'No cases match your filters.'}
+                        <td colSpan={PORTAL_COLUMNS.length} className="text-center py-16 text-slate-400">
+                          <div className="flex flex-col items-center gap-2">
+                            <ClipboardList size={32} className="text-slate-300" />
+                            <p className="text-sm font-medium">
+                              {cases.length === 0
+                                ? 'No cases yet'
+                                : 'No cases match your filters'}
+                            </p>
+                            <p className="text-xs text-slate-400">
+                              {cases.length === 0
+                                ? 'Your lab will add cases as they come in.'
+                                : 'Try adjusting your search or status filter.'}
+                            </p>
+                          </div>
                         </td>
                       </tr>
                     ) : (

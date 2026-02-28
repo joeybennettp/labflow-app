@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import { Clock, CheckCircle, DollarSign } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { PortalInvoiceCase } from '@/lib/types';
@@ -88,33 +89,61 @@ export default function PortalInvoicesPage() {
           </div>
         ) : (
           <>
+            {/* Page heading */}
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-slate-900">Invoices</h1>
+              {practiceName && (
+                <p className="text-sm text-slate-500 mt-1">{practiceName}</p>
+              )}
+            </div>
+
             {/* Summary cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
-                <div className="text-sm text-slate-500 mb-1">Outstanding</div>
-                <div className="text-2xl font-extrabold text-amber-600">
-                  ${totalPending.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
+              {/* Outstanding */}
+              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className="text-sm text-slate-500 mb-1">Outstanding</div>
+                  <div className="text-2xl font-extrabold text-amber-600">
+                    ${totalPending.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-xs text-slate-400 mt-1">
+                    {pendingCount} {pendingCount === 1 ? 'case' : 'cases'}
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400 mt-1">
-                  {pendingCount} {pendingCount === 1 ? 'case' : 'cases'}
-                </div>
-              </div>
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
-                <div className="text-sm text-slate-500 mb-1">Invoiced</div>
-                <div className="text-2xl font-extrabold text-green-600">
-                  ${totalInvoiced.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                </div>
-                <div className="text-xs text-slate-400 mt-1">
-                  {invoicedCount} {invoicedCount === 1 ? 'case' : 'cases'}
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+                  <Clock size={20} />
                 </div>
               </div>
-              <div className="hidden lg:block bg-white border border-slate-200 rounded-lg p-4 md:p-5">
-                <div className="text-sm text-slate-500 mb-1">Total</div>
-                <div className="text-2xl font-extrabold text-slate-900">
-                  ${(totalPending + totalInvoiced).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+
+              {/* Invoiced */}
+              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className="text-sm text-slate-500 mb-1">Invoiced</div>
+                  <div className="text-2xl font-extrabold text-green-600">
+                    ${totalInvoiced.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-xs text-slate-400 mt-1">
+                    {invoicedCount} {invoicedCount === 1 ? 'case' : 'cases'}
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400 mt-1">
-                  {cases.length} {cases.length === 1 ? 'case' : 'cases'}
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-green-100 text-green-600">
+                  <CheckCircle size={20} />
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div>
+                  <div className="text-sm text-slate-500 mb-1">Total</div>
+                  <div className="text-2xl font-extrabold text-slate-900">
+                    ${(totalPending + totalInvoiced).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div className="text-xs text-slate-400 mt-1">
+                    {cases.length} {cases.length === 1 ? 'case' : 'cases'}
+                  </div>
+                </div>
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 text-slate-600">
+                  <DollarSign size={20} />
                 </div>
               </div>
             </div>
@@ -168,10 +197,20 @@ export default function PortalInvoicesPage() {
                   <tbody>
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="text-center py-12 text-slate-400">
-                          {cases.length === 0
-                            ? 'No cases with billing data yet.'
-                            : 'No cases match this filter.'}
+                        <td colSpan={7} className="text-center py-16 text-slate-400">
+                          <div className="flex flex-col items-center gap-2">
+                            <DollarSign size={32} className="text-slate-300" />
+                            <p className="text-sm font-medium">
+                              {cases.length === 0
+                                ? 'No billing data yet'
+                                : 'No cases match this filter'}
+                            </p>
+                            <p className="text-xs text-slate-400">
+                              {cases.length === 0
+                                ? 'Invoice data will appear as your lab processes cases.'
+                                : 'Try a different filter.'}
+                            </p>
+                          </div>
                         </td>
                       </tr>
                     ) : (
@@ -218,20 +257,20 @@ export default function PortalInvoicesPage() {
                   {/* Totals row */}
                   {filtered.length > 0 && (
                     <tfoot>
-                      <tr className="bg-slate-50 border-t border-slate-200">
+                      <tr className="bg-slate-50 border-t-2 border-slate-200">
                         <td
                           colSpan={5}
-                          className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right hidden md:table-cell"
+                          className="px-4 py-3 text-sm font-bold text-slate-700 text-right hidden md:table-cell"
                         >
                           Total
                         </td>
                         <td
                           colSpan={3}
-                          className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right md:hidden"
+                          className="px-4 py-3 text-sm font-bold text-slate-700 text-right md:hidden"
                         >
                           Total
                         </td>
-                        <td className="px-4 py-3 text-right font-bold text-slate-900 hidden md:table-cell">
+                        <td className="px-4 py-3 text-right font-bold text-lg text-slate-900 hidden md:table-cell">
                           ${filtered.reduce((sum, c) => sum + Number(c.price), 0).toFixed(2)}
                         </td>
                         <td className="hidden md:table-cell" />

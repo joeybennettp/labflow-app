@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { href: '/portal/invoices', label: 'Invoices' },
 ];
 
-export default function PortalHeader({ doctorName, practiceName }: Props) {
+export default function PortalHeader({ doctorName }: Props) {
   const { signOut } = useAuth();
   const pathname = usePathname();
 
@@ -31,8 +31,7 @@ export default function PortalHeader({ doctorName, practiceName }: Props) {
             </span>
             {doctorName && (
               <span className="hidden sm:inline text-sm text-slate-400">
-                · {doctorName}
-                {practiceName ? `, ${practiceName}` : ''}
+                · Dr. {doctorName.split(' ').pop() || doctorName}
               </span>
             )}
           </div>
@@ -58,12 +57,23 @@ export default function PortalHeader({ doctorName, practiceName }: Props) {
           })}
         </nav>
       </div>
-      <button
-        onClick={signOut}
-        className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-      >
-        Sign Out
-      </button>
+
+      <div className="flex items-center gap-2 md:gap-3">
+        <span className="text-sm text-slate-400 hidden md:block">
+          {new Date().toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })}
+        </span>
+        <button
+          onClick={signOut}
+          className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          Sign Out
+        </button>
+      </div>
     </header>
   );
 }
