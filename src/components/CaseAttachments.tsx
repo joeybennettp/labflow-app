@@ -279,25 +279,19 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
           {attachments.map((att) => (
             <div
               key={att.id}
-              className="flex items-center gap-3 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100 group"
+              onClick={() => handlePreview(att)}
+              className="flex items-center gap-3 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100 group cursor-pointer hover:bg-slate-100 transition-colors"
             >
-              {/* Thumbnail or icon — clickable to preview */}
-              <button
-                onClick={() => handlePreview(att)}
-                className="w-10 h-10 bg-white border border-slate-200 rounded-md flex items-center justify-center overflow-hidden shrink-0 hover:border-brand-300 transition-colors"
-                title="Click to preview"
-              >
+              {/* Thumbnail or icon */}
+              <div className="w-10 h-10 bg-white border border-slate-200 rounded-md flex items-center justify-center overflow-hidden shrink-0 group-hover:border-brand-300 transition-colors">
                 {getFileIcon(att.file_type)}
-              </button>
+              </div>
 
-              {/* File info — name is clickable to preview */}
+              {/* File info */}
               <div className="min-w-0 flex-1">
-                <button
-                  onClick={() => handlePreview(att)}
-                  className="text-sm font-medium text-slate-800 truncate block max-w-full text-left hover:text-brand-600 transition-colors"
-                >
+                <div className="text-sm font-medium text-slate-800 truncate">
                   {att.file_name}
-                </button>
+                </div>
                 <div className="text-xs text-slate-400 flex items-center gap-1.5">
                   {formatFileSize(att.file_size)} · {new Date(att.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   <span className={`px-1.5 py-0.5 rounded text-[0.6rem] font-bold ${
@@ -310,8 +304,8 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+              {/* Actions — stopPropagation so they don't trigger preview */}
+              <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => handleDownload(att)}
                   title="Download"
