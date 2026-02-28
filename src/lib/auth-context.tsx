@@ -165,9 +165,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const isLoginPage = pathname === '/login';
     const isRegisterPage = pathname === '/portal/register';
+    const isSignupPage = pathname === '/signup';
     const isPortalPage = pathname.startsWith('/portal');
 
-    if (!user && !isLoginPage && !isRegisterPage) {
+    if (!user && !isLoginPage && !isRegisterPage && !isSignupPage) {
       router.push('/login');
     } else if (user && isLoginPage && roleResolved) {
       // Wait for real role from DB before redirecting from login

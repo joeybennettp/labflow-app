@@ -92,9 +92,15 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-6">
-          Contact your lab administrator for account access.
-        </p>
+        <div className="text-center mt-6">
+          <p className="text-xs text-slate-500 mb-2">Been invited to join the team?</p>
+          <Link
+            href="/signup"
+            className="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+          >
+            Set up your account →
+          </Link>
+        </div>
 
         <div className="text-center mt-4 pt-4 border-t border-slate-100">
           <p className="text-xs text-slate-500 mb-2">Are you a referring doctor?</p>
