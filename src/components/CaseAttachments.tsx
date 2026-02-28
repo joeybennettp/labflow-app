@@ -7,6 +7,7 @@ import { CaseAttachment } from '@/lib/types';
 
 type Props = {
   caseId: string;
+  role?: 'lab' | 'doctor'; // defaults to 'lab'
 };
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -33,7 +34,7 @@ function getFileIcon(fileType: string) {
   return <File size={16} className="text-slate-400" />;
 }
 
-export default function CaseAttachments({ caseId }: Props) {
+export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
   const [attachments, setAttachments] = useState<CaseAttachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -110,7 +111,7 @@ export default function CaseAttachments({ caseId }: Props) {
           file_size: file.size,
           file_type: file.type,
           uploaded_by: user.id,
-          uploaded_by_role: 'lab',
+          uploaded_by_role: role,
         });
 
       if (insertError) throw new Error(insertError.message);
@@ -292,8 +293,15 @@ export default function CaseAttachments({ caseId }: Props) {
                 <div className="text-sm font-medium text-slate-800 truncate">
                   {att.file_name}
                 </div>
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-slate-400 flex items-center gap-1.5">
                   {formatFileSize(att.file_size)} · {new Date(att.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  <span className={`px-1.5 py-0.5 rounded text-[0.6rem] font-bold ${
+                    att.uploaded_by_role === 'doctor'
+                      ? 'bg-purple-100 text-purple-600'
+                      : 'bg-blue-100 text-blue-600'
+                  }`}>
+                    {att.uploaded_by_role === 'doctor' ? 'Doctor' : 'Lab'}
+                  </span>
                 </div>
               </div>
 
@@ -306,13 +314,16 @@ export default function CaseAttachments({ caseId }: Props) {
                 >
                   <Download size={14} />
                 </button>
-                <button
-                  onClick={() => handleDelete(att)}
-                  title="Delete"
-                  className="w-8 h-8 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors"
-                >
-                  <Trash2 size={14} />
-                </button>
+                {/* Lab staff can delete any file; doctors can only delete their own */}
+                {(role === 'lab' || att.uploaded_by_role === 'doctor') && (
+                  <button
+                    onClick={() => handleDelete(att)}
+                    title="Delete"
+                    className="w-8 h-8 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                )}
               </div>
             </div>
           ))}

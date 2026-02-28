@@ -3,6 +3,7 @@
 import { PortalCase } from '@/lib/types';
 import Modal from './Modal';
 import StatusBadge from './StatusBadge';
+import CaseAttachments from './CaseAttachments';
 
 type Props = {
   caseData: PortalCase;
@@ -141,6 +142,9 @@ export default function PortalCaseDetail({ caseData, onClose }: Props) {
           </div>
         </div>
       )}
+
+      {/* Attachments */}
+      <CaseAttachments caseId={caseData.id} role="doctor" />
 
       {/* Timestamps */}
       <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400">
