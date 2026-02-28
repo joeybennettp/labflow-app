@@ -10,6 +10,7 @@ import { Case, Doctor } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
 import StatusBadge from '@/components/StatusBadge';
 import generateInvoicePDF from '@/lib/generateInvoicePDF';
+import { logActivity } from '@/lib/activity';
 
 type LabSettings = {
   id: string;
@@ -71,6 +72,10 @@ export default function InvoicesPage() {
       .from('cases')
       .update({ invoiced: !currentValue })
       .eq('id', caseId);
+    logActivity(supabase, {
+      caseId,
+      action: currentValue ? 'unmarked as invoiced' : 'marked as invoiced',
+    });
     await refreshCases();
   }
 

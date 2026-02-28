@@ -11,6 +11,11 @@ import {
   Settings,
   LogOut,
   X,
+  Truck,
+  BarChart3,
+  Calendar,
+  History,
+  Package,
 } from 'lucide-react';
 import { ReactNode } from 'react';
 
@@ -21,6 +26,11 @@ type Props = {
 
 const NAV_ITEMS: { icon: ReactNode; label: string; href: string; adminOnly: boolean }[] = [
   { icon: <ClipboardList size={18} />, label: 'Case Dashboard', href: '/', adminOnly: false },
+  { icon: <Calendar size={18} />, label: 'Calendar', href: '/calendar', adminOnly: false },
+  { icon: <Truck size={18} />, label: 'Shipping', href: '/shipping', adminOnly: false },
+  { icon: <Package size={18} />, label: 'Inventory', href: '/inventory', adminOnly: true },
+  { icon: <BarChart3 size={18} />, label: 'Reports', href: '/reports', adminOnly: true },
+  { icon: <History size={18} />, label: 'Activity', href: '/activity', adminOnly: true },
   { icon: <Stethoscope size={18} />, label: 'Doctors', href: '/doctors', adminOnly: false },
   { icon: <Receipt size={18} />, label: 'Invoices', href: '/invoices', adminOnly: true },
   { icon: <Users size={18} />, label: 'Team', href: '/team', adminOnly: true },

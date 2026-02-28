@@ -1,11 +1,13 @@
 'use client';
 
-import { Trash2, Pencil } from 'lucide-react';
+import { useState } from 'react';
+import { Trash2, Pencil, Truck } from 'lucide-react';
 import { Case } from '@/lib/types';
 import Modal from './Modal';
 import StatusBadge from './StatusBadge';
 import CaseAttachments from './CaseAttachments';
 import CaseMessages from './CaseMessages';
+import CaseMaterials from './CaseMaterials';
 
 type Props = {
   caseData: Case;
@@ -13,7 +15,7 @@ type Props = {
   onClose: () => void;
   onEdit: () => void;
   onDelete: (id: string) => void;
-  onStatusChange: (id: string, newStatus: Case['status']) => void;
+  onStatusChange: (id: string, newStatus: Case['status'], shippingData?: { shipping_carrier: string; tracking_number: string }) => void;
 };
 
 const STATUS_FLOW: Case['status'][] = [
@@ -38,6 +40,8 @@ const BACKWARD_MOVES: Partial<Record<Case['status'], { target: Case['status']; l
   ready: { target: 'quality_check', label: 'Back to QC Check' },
   shipped: { target: 'ready', label: 'Back to Ready' },
 };
+
+const CARRIERS = ['FedEx', 'UPS', 'USPS', 'Hand Delivery', 'Other'] as const;
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00');
@@ -67,12 +71,34 @@ export default function CaseDetailModal({
   onDelete,
   onStatusChange,
 }: Props) {
+  const [showShippingForm, setShowShippingForm] = useState(false);
+  const [carrier, setCarrier] = useState('FedEx');
+  const [trackingNumber, setTrackingNumber] = useState('');
+
   const currentIndex = STATUS_FLOW.indexOf(caseData.status);
   const nextStatus = currentIndex < STATUS_FLOW.length - 1 ? STATUS_FLOW[currentIndex + 1] : null;
   const backwardMove = BACKWARD_MOVES[caseData.status] || null;
   const isOverdue =
     caseData.status !== 'shipped' &&
     caseData.due < new Date().toISOString().split('T')[0];
+
+  function handleForwardStatus() {
+    if (!nextStatus) return;
+    // If moving to shipped, show shipping form instead of immediately changing
+    if (nextStatus === 'shipped') {
+      setShowShippingForm(true);
+    } else {
+      onStatusChange(caseData.id, nextStatus);
+    }
+  }
+
+  function handleShipConfirm() {
+    onStatusChange(caseData.id, 'shipped', {
+      shipping_carrier: carrier,
+      tracking_number: trackingNumber,
+    });
+    setShowShippingForm(false);
+  }
 
   const footer = (
     <>
@@ -99,15 +125,19 @@ export default function CaseDetailModal({
           onClick={() => onStatusChange(caseData.id, backwardMove.target)}
           className="px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
         >
-          ← {backwardMove.label}
+          &larr; {backwardMove.label}
         </button>
       )}
       {nextStatus && (
         <button
-          onClick={() => onStatusChange(caseData.id, nextStatus)}
+          onClick={handleForwardStatus}
           className="px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors"
         >
-          Move to {STATUS_LABELS[nextStatus]} →
+          {nextStatus === 'shipped' ? (
+            <><Truck size={14} className="inline -mt-0.5 mr-1" />Mark Shipped</>
+          ) : (
+            <>Move to {STATUS_LABELS[nextStatus]} &rarr;</>
+          )}
         </button>
       )}
     </>
@@ -125,6 +155,56 @@ export default function CaseDetailModal({
       {caseData.rush && (
         <div className="mb-4 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-semibold">
           ⚡ Rush Case
+        </div>
+      )}
+
+      {/* Shipping prompt */}
+      {showShippingForm && (
+        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2 mb-3">
+            <Truck size={16} className="text-blue-600" />
+            <span className="text-sm font-bold text-blue-900">Shipping Details</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Carrier</label>
+              <select
+                value={carrier}
+                onChange={(e) => setCarrier(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              >
+                {CARRIERS.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">
+                Tracking Number <span className="text-slate-400 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+                placeholder="e.g. 1Z999AA10123456784"
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={handleShipConfirm}
+              className="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors"
+            >
+              Confirm Shipment
+            </button>
+            <button
+              onClick={() => setShowShippingForm(false)}
+              className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
@@ -200,6 +280,31 @@ export default function CaseDetailModal({
         />
       </div>
 
+      {/* Shipping info — shown when case is shipped */}
+      {caseData.status === 'shipped' && caseData.shipping_carrier && (
+        <div className="mt-5">
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+            Shipping
+          </div>
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+            <span className="text-sm font-semibold text-blue-800 flex items-center gap-1.5">
+              <Truck size={14} className="text-blue-600" />
+              {caseData.shipping_carrier}
+            </span>
+            {caseData.tracking_number && (
+              <span className="text-sm text-slate-600 font-mono">
+                {caseData.tracking_number}
+              </span>
+            )}
+            {caseData.shipped_at && (
+              <span className="text-xs text-slate-400">
+                Shipped {formatTimestamp(caseData.shipped_at)}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Notes */}
       {caseData.notes && (
         <div className="mt-5">
@@ -211,6 +316,9 @@ export default function CaseDetailModal({
           </div>
         </div>
       )}
+
+      {/* Materials */}
+      <CaseMaterials caseId={caseData.id} />
 
       {/* Attachments */}
       <CaseAttachments caseId={caseData.id} />

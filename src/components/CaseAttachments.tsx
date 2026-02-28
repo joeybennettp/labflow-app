@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Upload, Trash2, FileText, Image, File, Download, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { CaseAttachment } from '@/lib/types';
+import { logActivity } from '@/lib/activity';
 
 type Props = {
   caseId: string;
@@ -120,6 +121,8 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
 
       if (insertError) throw new Error(insertError.message);
 
+      logActivity(supabase, { caseId, action: `uploaded file "${file.name}"` });
+
       await fetchAttachments();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
@@ -154,6 +157,8 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
       setError('Failed to delete record: ' + dbError.message);
       return;
     }
+
+    logActivity(supabase, { caseId, action: `removed file "${attachment.file_name}"` });
 
     await fetchAttachments();
   }

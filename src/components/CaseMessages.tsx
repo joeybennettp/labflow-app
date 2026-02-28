@@ -5,6 +5,7 @@ import { Send, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { CaseMessage } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
+import { logActivity } from '@/lib/activity';
 
 type Props = {
   caseId: string;
@@ -93,6 +94,8 @@ export default function CaseMessages({ caseId, role }: Props) {
         });
 
       if (insertError) throw new Error(insertError.message);
+
+      logActivity(supabase, { caseId, action: `sent a message` });
 
       setNewMessage('');
       await fetchMessages();

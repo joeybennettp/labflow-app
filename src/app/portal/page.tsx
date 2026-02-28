@@ -98,7 +98,7 @@ export default function PortalPage() {
       // Explicitly exclude financial columns
       const { data } = await supabase
         .from('cases')
-        .select('id, case_number, patient, type, shade, status, rush, due, notes, created_at, updated_at')
+        .select('id, case_number, patient, type, shade, status, rush, due, notes, shipping_carrier, tracking_number, shipped_at, created_at, updated_at')
         .order('due', { ascending: true });
 
       setCases((data as PortalCase[]) || []);

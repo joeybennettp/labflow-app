@@ -12,6 +12,9 @@ export type Case = {
   price: number;
   notes: string | null;
   invoiced: boolean;
+  shipping_carrier: string;
+  tracking_number: string;
+  shipped_at: string | null;
   created_at: string;
   updated_at: string;
   doctors: { name: string } | null;
@@ -37,6 +40,9 @@ export type PortalCase = {
   rush: boolean;
   due: string;
   notes: string | null;
+  shipping_carrier: string;
+  tracking_number: string;
+  shipped_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -73,6 +79,41 @@ export type PortalInvoiceCase = {
   due: string;
   price: number;
   invoiced: boolean;
+};
+
+export type ActivityLogEntry = {
+  id: string;
+  case_id: string | null;
+  user_id: string;
+  user_name: string;
+  action: string;
+  details: Record<string, unknown>;
+  created_at: string;
+  cases?: { case_number: string } | null;
+};
+
+export type Material = {
+  id: string;
+  name: string;
+  sku: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  reorder_level: number;
+  unit_cost: number;
+  supplier: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CaseMaterial = {
+  id: string;
+  case_id: string;
+  material_id: string;
+  quantity_used: number;
+  created_at: string;
+  materials?: { name: string; unit: string } | null;
 };
 
 export type SortColumn = 'case_number' | 'patient' | 'doctor' | 'type' | 'status' | 'due' | 'price';

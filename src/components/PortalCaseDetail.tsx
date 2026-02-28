@@ -1,6 +1,6 @@
 'use client';
 
-import { Building2, Phone, Mail } from 'lucide-react';
+import { Building2, Phone, Mail, Truck } from 'lucide-react';
 import { PortalCase } from '@/lib/types';
 import Modal from './Modal';
 import StatusBadge from './StatusBadge';
@@ -135,6 +135,31 @@ export default function PortalCaseDetail({ caseData, onClose, labName, labPhone,
           value={caseData.rush ? '⚡ Yes' : 'No'}
         />
       </div>
+
+      {/* Shipping info — shown when case is shipped */}
+      {caseData.status === 'shipped' && caseData.shipping_carrier && (
+        <div className="mt-5">
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+            Shipping
+          </div>
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+            <span className="text-sm font-semibold text-blue-800 flex items-center gap-1.5">
+              <Truck size={14} className="text-blue-600" />
+              {caseData.shipping_carrier}
+            </span>
+            {caseData.tracking_number && (
+              <span className="text-sm text-slate-600 font-mono">
+                {caseData.tracking_number}
+              </span>
+            )}
+            {caseData.shipped_at && (
+              <span className="text-xs text-slate-400">
+                Shipped {formatTimestamp(caseData.shipped_at)}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Notes */}
       {caseData.notes && (

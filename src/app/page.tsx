@@ -11,6 +11,7 @@ import AnalyticsGrid from '@/components/AnalyticsGrid';
 import CaseDetailModal from '@/components/CaseDetailModal';
 import CaseFormModal, { CaseFormData } from '@/components/CaseFormModal';
 import { useAuth } from '@/lib/auth-context';
+import { logActivity } from '@/lib/activity';
 
 export default function DashboardPage() {
   const { isAdmin } = useAuth();
@@ -116,6 +117,16 @@ export default function DashboardPage() {
 
     if (error) throw new Error(error.message);
 
+    // Log activity (get the created case to know its ID)
+    const { data: newCases } = await supabase
+      .from('cases')
+      .select('id, case_number')
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (newCases?.[0]) {
+      logActivity(supabase, { caseId: newCases[0].id, action: `created case`, details: { patient: formData.patient, type: formData.type } });
+    }
+
     await refreshCases();
     closeAllModals();
   }
@@ -140,6 +151,8 @@ export default function DashboardPage() {
 
     if (error) throw new Error(error.message);
 
+    logActivity(supabase, { caseId: selectedCase.id, action: `edited case`, details: { patient: formData.patient } });
+
     await refreshCases();
     closeAllModals();
   }
@@ -151,6 +164,8 @@ export default function DashboardPage() {
     );
     if (!confirmed) return;
 
+    logActivity(supabase, { caseId: id, action: `deleted case`, details: { case_number: caseToDelete?.case_number } });
+
     const { error } = await supabase.from('cases').delete().eq('id', id);
     if (error) {
       alert('Failed to delete case: ' + error.message);
@@ -160,16 +175,32 @@ export default function DashboardPage() {
     closeAllModals();
   }
 
-  async function handleStatusChange(id: string, newStatus: Case['status']) {
+  async function handleStatusChange(id: string, newStatus: Case['status'], shippingData?: { shipping_carrier: string; tracking_number: string }) {
+    const updatePayload: Record<string, unknown> = { status: newStatus };
+
+    // If moving to shipped, include shipping details
+    if (newStatus === 'shipped' && shippingData) {
+      updatePayload.shipping_carrier = shippingData.shipping_carrier;
+      updatePayload.tracking_number = shippingData.tracking_number;
+      updatePayload.shipped_at = new Date().toISOString();
+    }
+
     const { error } = await supabase
       .from('cases')
-      .update({ status: newStatus })
+      .update(updatePayload)
       .eq('id', id);
 
     if (error) {
       console.error('Status update failed:', error.message);
       return;
     }
+
+    const caseForLog = cases.find((c) => c.id === id);
+    logActivity(supabase, {
+      caseId: id,
+      action: `changed status to ${newStatus.replace(/_/g, ' ')}`,
+      details: { from: caseForLog?.status, to: newStatus },
+    });
 
     await refreshCases();
 
