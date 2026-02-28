@@ -28,6 +28,9 @@ export default function DashboardPage() {
   const [showNewCase, setShowNewCase] = useState(false);
   const [showEditCase, setShowEditCase] = useState(false);
 
+  // Chart → table drill-down
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+
   // Fetch cases from Supabase
   const refreshCases = useCallback(async () => {
     const { data, error } = await supabase
@@ -195,8 +198,15 @@ export default function DashboardPage() {
           {!loading && !error && (
             <>
               <StatsGrid cases={cases} isAdmin={isAdmin} />
-              <AnalyticsGrid cases={cases} isAdmin={isAdmin} />
-              <CasesTable cases={cases} doctors={doctors} isAdmin={isAdmin} onRowClick={handleRowClick} />
+              <AnalyticsGrid cases={cases} isAdmin={isAdmin} onTypeClick={(type) => setTypeFilter(type)} />
+              <CasesTable
+                cases={cases}
+                doctors={doctors}
+                isAdmin={isAdmin}
+                onRowClick={handleRowClick}
+                typeFilter={typeFilter}
+                onClearTypeFilter={() => setTypeFilter(undefined)}
+              />
             </>
           )}
         </main>

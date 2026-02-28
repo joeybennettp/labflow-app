@@ -19,6 +19,13 @@ import {
 type Props = {
   cases: Case[];
   isAdmin?: boolean;
+  onTypeClick?: (type: string) => void;
+};
+
+type TickProps = {
+  x: string | number;
+  y: string | number;
+  payload: { value: string };
 };
 
 const STATUS_COLORS: Record<Case['status'], string> = {
@@ -37,7 +44,7 @@ const STATUS_LABELS: Record<Case['status'], string> = {
   shipped: 'Shipped',
 };
 
-export default function AnalyticsGrid({ cases, isAdmin }: Props) {
+export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
   // Chart 1: Cases by status
   const statusData = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -203,7 +210,21 @@ export default function AnalyticsGrid({ cases, isAdmin }: Props) {
                 dataKey="type"
                 type="category"
                 width={140}
-                tick={{ fontSize: 12, fill: '#334155' }}
+                tick={onTypeClick ? (props: TickProps) => (
+                  <text
+                    x={props.x}
+                    y={props.y}
+                    textAnchor="end"
+                    fill="#2563eb"
+                    fontSize={12}
+                    fontWeight={500}
+                    cursor="pointer"
+                    onClick={() => onTypeClick(props.payload.value)}
+                    dominantBaseline="central"
+                  >
+                    {props.payload.value}
+                  </text>
+                ) : { fontSize: 12, fill: '#334155' }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -215,7 +236,17 @@ export default function AnalyticsGrid({ cases, isAdmin }: Props) {
                   fontSize: '13px',
                 }}
               />
-              <Bar dataKey="count" fill="#2563eb" radius={[0, 4, 4, 0]} barSize={24} />
+              <Bar
+                dataKey="count"
+                fill="#2563eb"
+                radius={[0, 4, 4, 0]}
+                barSize={24}
+                cursor={onTypeClick ? 'pointer' : undefined}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onClick={(data: any) => {
+                  if (onTypeClick && data?.type) onTypeClick(data.type);
+                }}
+              />
             </BarChart>
           </ResponsiveContainer>
         ) : (

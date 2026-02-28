@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { AlertTriangle, Clock } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { AlertTriangle, Clock, X } from 'lucide-react';
 import { Case, Doctor, SortColumn, SortDirection } from '@/lib/types';
 import StatusBadge from './StatusBadge';
 
@@ -10,6 +10,8 @@ type Props = {
   doctors?: Doctor[];
   isAdmin?: boolean;
   onRowClick?: (c: Case) => void;
+  typeFilter?: string;
+  onClearTypeFilter?: () => void;
 };
 
 const FILTER_OPTIONS: { key: string; label: string }[] = [
@@ -61,7 +63,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Props) {
+export default function CasesTable({ cases, doctors, isAdmin, onRowClick, typeFilter, onClearTypeFilter }: Props) {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortColumn>('due');
@@ -69,6 +71,14 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
   const [doctorFilter, setDoctorFilter] = useState('all');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll into view when a type filter is applied from the chart
+  useEffect(() => {
+    if (typeFilter && tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [typeFilter]);
 
   function handleSort(column: SortColumn) {
     if (sortBy === column) {
@@ -84,7 +94,8 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
     filter !== 'all' ||
     doctorFilter !== 'all' ||
     dateFrom !== '' ||
-    dateTo !== '';
+    dateTo !== '' ||
+    !!typeFilter;
 
   function clearFilters() {
     setSearch('');
@@ -92,6 +103,7 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
     setDoctorFilter('all');
     setDateFrom('');
     setDateTo('');
+    onClearTypeFilter?.();
   }
 
   const visibleColumns = useMemo(
@@ -119,6 +131,11 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
           c.type.toLowerCase().includes(q) ||
           (c.doctors?.name || '').toLowerCase().includes(q)
       );
+    }
+
+    // Restoration type filter (from chart click)
+    if (typeFilter) {
+      result = result.filter((c) => c.type === typeFilter);
     }
 
     // Doctor filter
@@ -170,12 +187,27 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
     });
 
     return result;
-  }, [cases, filter, search, doctorFilter, dateFrom, dateTo, sortBy, sortDir]);
+  }, [cases, filter, search, doctorFilter, dateFrom, dateTo, sortBy, sortDir, typeFilter]);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+    <div ref={tableRef} className="bg-white border border-slate-200 rounded-lg overflow-hidden">
       {/* Header with filters and search */}
       <div className="p-3 md:p-4 border-b border-slate-200 space-y-3">
+        {/* Active type filter chip */}
+        {typeFilter && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500 font-medium">Showing:</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded-lg border border-brand-200">
+              {typeFilter}
+              <button
+                onClick={onClearTypeFilter}
+                className="hover:bg-brand-100 rounded p-0.5 transition-colors"
+              >
+                <X size={12} />
+              </button>
+            </span>
+          </div>
+        )}
         {/* Row 1: Title, search, status tabs */}
         <div className="flex items-center justify-between flex-wrap gap-3 md:gap-4">
           <span className="text-[0.9375rem] font-bold text-slate-900">
