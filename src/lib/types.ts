@@ -63,5 +63,17 @@ export type CaseMessage = {
   created_at: string;
 };
 
+// Case data for doctor invoice view (includes price + invoiced)
+export type PortalInvoiceCase = {
+  id: string;
+  case_number: string;
+  patient: string;
+  type: string;
+  status: 'received' | 'in_progress' | 'quality_check' | 'ready' | 'shipped';
+  due: string;
+  price: number;
+  invoiced: boolean;
+};
+
 export type SortColumn = 'case_number' | 'patient' | 'doctor' | 'type' | 'status' | 'due' | 'price';
 export type SortDirection = 'asc' | 'desc';
