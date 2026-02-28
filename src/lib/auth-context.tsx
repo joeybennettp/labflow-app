@@ -49,27 +49,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   // Fetch the user's role from user_profiles and sync their email
-  async function fetchRole(userId: string, userEmail?: string) {
+  async function fetchRole(userId: string, userEmail?: string, retry = true) {
     try {
       // Sync email into user_profiles (for team management page)
       if (userEmail) {
-        await supabase
+        supabase
           .from('user_profiles')
           .update({ email: userEmail })
-          .eq('id', userId);
+          .eq('id', userId)
+          .then(() => {}); // fire-and-forget, don't block role fetch
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('user_profiles')
         .select('role')
         .eq('id', userId)
         .single();
 
-      const newRole = (data?.role as UserRole) || 'tech';
+      if (error || !data) {
+        // Auth token might not be ready yet — retry once after a short delay
+        if (retry) {
+          await new Promise((r) => setTimeout(r, 500));
+          return fetchRole(userId, undefined, false);
+        }
+        // If retry also failed, keep whatever is cached — don't overwrite with 'tech'
+        return;
+      }
+
+      const newRole = (data.role as UserRole) || 'tech';
       setRole(newRole);
       setCachedRole(newRole);
     } catch {
-      setRole('tech');
+      // Network error — keep cached role, don't overwrite
     }
   }
 
