@@ -74,7 +74,7 @@ export default function DoctorRegisterPage() {
 
     if (linkError) {
       setError(
-        'Account created but failed to link to doctor record. Please contact the lab.'
+        `Link error: ${linkError.message || linkError.code || JSON.stringify(linkError)}`
       );
       setLoading(false);
       return;
