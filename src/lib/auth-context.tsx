@@ -65,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<UserRole>(getCachedRole);
   const [doctorId, setDoctorId] = useState<string | null>(getCachedDoctorId);
   const [loading, setLoading] = useState(true);
+  const [roleResolved, setRoleResolved] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -99,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const newRole = (data.role as UserRole) || 'tech';
       setRole(newRole);
       setCachedRole(newRole);
+      setRoleResolved(true);
 
       // If doctor, fetch the linked doctor record ID
       if (newRole === 'doctor') {
@@ -130,8 +132,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(currentUser);
 
         if (currentUser) {
-          // Fire in background — cached role renders instantly,
-          // fetchRole updates it (and the cache) once it resolves.
+          // New sign-in — role not yet confirmed from DB
+          setRoleResolved(false);
+          // Fire in background — fetchRole updates role (and cache) once it resolves.
           fetchRole(currentUser.id, currentUser.email ?? undefined);
         } else {
           setRole('tech');
@@ -166,8 +169,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!user && !isLoginPage && !isRegisterPage) {
       router.push('/login');
-    } else if (user && isLoginPage) {
-      // Role-based redirect from login
+    } else if (user && isLoginPage && roleResolved) {
+      // Wait for real role from DB before redirecting from login
       router.push(role === 'doctor' ? '/portal' : '/');
     } else if (user && role === 'doctor' && !isPortalPage) {
       // Doctors can only access /portal/*
@@ -176,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Non-doctors should not be on /portal (but registration is public)
       router.push('/');
     }
-  }, [user, role, loading, pathname, router]);
+  }, [user, role, roleResolved, loading, pathname, router]);
 
   async function signIn(email: string, password: string): Promise<string | null> {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -187,9 +190,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     await supabase.auth.signOut();
     setRole('tech');
-    setCachedRole('tech');
     setDoctorId(null);
-    setCachedDoctorId(null);
+    // Clear cached role entirely so next login doesn't use stale role
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('labflow-role');
+      localStorage.removeItem('labflow-doctor-id');
+    }
     router.push('/login');
   }
 
