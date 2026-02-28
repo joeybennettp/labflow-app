@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
 import Sidebar from '@/components/Sidebar';
 
 type LabSettings = {
@@ -16,6 +18,7 @@ type LabSettings = {
 };
 
 export default function SettingsPage() {
+  const { isAdmin } = useAuth();
   const [settings, setSettings] = useState<LabSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -254,9 +257,18 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between py-2">
                     <div>
                       <div className="text-sm font-medium text-slate-700">Team Members</div>
-                      <div className="text-xs text-slate-500">Add users in the Supabase dashboard</div>
+                      <div className="text-xs text-slate-500">Manage roles and access</div>
                     </div>
-                    <span className="text-xs text-slate-400">Coming soon</span>
+                    {isAdmin ? (
+                      <Link
+                        href="/team"
+                        className="px-3 py-1.5 text-xs font-semibold text-brand-600 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors"
+                      >
+                        Manage Team
+                      </Link>
+                    ) : (
+                      <span className="text-xs text-slate-400">Contact admin</span>
+                    )}
                   </div>
                 </div>
               </div>

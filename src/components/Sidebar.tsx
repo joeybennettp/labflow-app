@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { icon: '📋', label: 'Case Dashboard', href: '/', adminOnly: false },
   { icon: '👨‍⚕️', label: 'Doctors', href: '/doctors', adminOnly: false },
   { icon: '💰', label: 'Invoices', href: '/invoices', adminOnly: true },
+  { icon: '👥', label: 'Team', href: '/team', adminOnly: true },
 ];
 
 const ACCOUNT_ITEMS = [

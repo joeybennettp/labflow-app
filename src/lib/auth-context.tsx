@@ -29,7 +29,7 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-// Cache role in localStorage for instant loads
+// Cache role in localStorage to avoid flicker on subsequent loads
 function getCachedRole(): UserRole {
   if (typeof window === 'undefined') return 'tech';
   return (localStorage.getItem('labflow-role') as UserRole) || 'tech';
@@ -48,9 +48,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Fetch the user's role from user_profiles (runs in background)
-  async function fetchRole(userId: string) {
+  // Fetch the user's role from user_profiles and sync their email
+  async function fetchRole(userId: string, userEmail?: string) {
     try {
+      // Sync email into user_profiles (for team management page)
+      if (userEmail) {
+        await supabase
+          .from('user_profiles')
+          .update({ email: userEmail })
+          .eq('id', userId);
+      }
+
       const { data } = await supabase
         .from('user_profiles')
         .select('role')
@@ -74,23 +82,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const currentUser = session?.user ?? null;
         setUser(currentUser);
 
-        // Stop loading immediately — use cached role for now.
-        // fetchRole will update it in the background if it changed.
-        setLoading(false);
-
         if (currentUser) {
-          fetchRole(currentUser.id);
+          // AWAIT fetchRole so the correct role is set before rendering
+          await fetchRole(currentUser.id, currentUser.email ?? undefined);
         } else {
           setRole('tech');
           setCachedRole('tech');
         }
+
+        setLoading(false);
       }
     );
 
-    // Safety timeout — if auth never resolves, stop loading after 2s.
+    // Safety timeout — if auth never resolves, stop loading after 3s
     const timeout = setTimeout(() => {
       if (mounted) setLoading(false);
-    }, 2000);
+    }, 3000);
 
     return () => {
       mounted = false;
@@ -127,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAdmin = role === 'admin';
 
-  // Show loading spinner while checking auth
+  // Show loading spinner while checking auth + role
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50">
