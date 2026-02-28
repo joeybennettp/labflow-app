@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import { AlertTriangle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { PortalCase } from '@/lib/types';
@@ -217,7 +218,7 @@ export default function PortalPage() {
                                 isOverdue ? 'text-red-600 font-semibold' : 'text-slate-600'
                               }`}
                             >
-                              {isOverdue && '⚠ '}
+                              {isOverdue && <AlertTriangle size={14} className="inline -mt-0.5 mr-1" />}
                               {formatDate(c.due)}
                             </td>
                           </tr>

@@ -187,7 +187,8 @@ export default function CaseDetailModal({
         {isAdmin && (
           <DetailField
             label="Invoiced"
-            value={caseData.invoiced ? '✅ Yes' : '❌ No'}
+            value={caseData.invoiced ? 'Yes' : 'No'}
+            className={caseData.invoiced ? 'text-green-600 font-semibold' : 'text-slate-500'}
           />
         )}
         <DetailField

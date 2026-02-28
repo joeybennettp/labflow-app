@@ -1,5 +1,7 @@
 'use client';
 
+import { Menu } from 'lucide-react';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -95,9 +97,9 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-lg hover:bg-slate-50 transition-colors"
+              className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition-colors"
             >
-              ☰
+              <Menu size={18} />
             </button>
             <h1 className="text-[1.0625rem] font-bold text-slate-900">
               Settings

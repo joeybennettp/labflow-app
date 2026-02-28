@@ -3,21 +3,31 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import {
+  ClipboardList,
+  Stethoscope,
+  Receipt,
+  Users,
+  Settings,
+  LogOut,
+  X,
+} from 'lucide-react';
+import { ReactNode } from 'react';
 
 type Props = {
   open?: boolean;
   onClose?: () => void;
 };
 
-const NAV_ITEMS = [
-  { icon: '📋', label: 'Case Dashboard', href: '/', adminOnly: false },
-  { icon: '👨‍⚕️', label: 'Doctors', href: '/doctors', adminOnly: false },
-  { icon: '💰', label: 'Invoices', href: '/invoices', adminOnly: true },
-  { icon: '👥', label: 'Team', href: '/team', adminOnly: true },
+const NAV_ITEMS: { icon: ReactNode; label: string; href: string; adminOnly: boolean }[] = [
+  { icon: <ClipboardList size={18} />, label: 'Case Dashboard', href: '/', adminOnly: false },
+  { icon: <Stethoscope size={18} />, label: 'Doctors', href: '/doctors', adminOnly: false },
+  { icon: <Receipt size={18} />, label: 'Invoices', href: '/invoices', adminOnly: true },
+  { icon: <Users size={18} />, label: 'Team', href: '/team', adminOnly: true },
 ];
 
-const ACCOUNT_ITEMS = [
-  { icon: '⚙️', label: 'Settings', href: '/settings', disabled: false },
+const ACCOUNT_ITEMS: { icon: ReactNode; label: string; href: string; disabled: boolean }[] = [
+  { icon: <Settings size={18} />, label: 'Settings', href: '/settings', disabled: false },
 ];
 
 export default function Sidebar({ open, onClose }: Props) {
@@ -42,9 +52,9 @@ export default function Sidebar({ open, onClose }: Props) {
         {onClose && (
           <button
             onClick={onClose}
-            className="md:hidden w-8 h-8 rounded-md text-slate-400 hover:bg-white/[0.07] hover:text-white flex items-center justify-center text-lg"
+            className="md:hidden w-8 h-8 rounded-md text-slate-400 hover:bg-white/[0.07] hover:text-white flex items-center justify-center"
           >
-            ✕
+            <X size={18} />
           </button>
         )}
       </div>
@@ -67,7 +77,7 @@ export default function Sidebar({ open, onClose }: Props) {
                   : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200'
               }`}
             >
-              <span className="text-base">{item.icon}</span>
+              {item.icon}
               {item.label}
             </Link>
           );
@@ -82,7 +92,7 @@ export default function Sidebar({ open, onClose }: Props) {
               key={item.label}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 opacity-60 cursor-not-allowed mb-0.5"
             >
-              <span className="text-base">{item.icon}</span>
+              {item.icon}
               {item.label}
             </span>
           ) : (
@@ -96,7 +106,7 @@ export default function Sidebar({ open, onClose }: Props) {
                   : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200'
               }`}
             >
-              <span className="text-base">{item.icon}</span>
+              {item.icon}
               {item.label}
             </Link>
           )
@@ -122,7 +132,7 @@ export default function Sidebar({ open, onClose }: Props) {
           onClick={signOut}
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/[0.07] hover:text-slate-200 transition-colors"
         >
-          <span>🚪</span>
+          <LogOut size={16} />
           Sign Out
         </button>
       </div>

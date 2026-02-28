@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Menu, Bell, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 
 type Props = {
@@ -55,9 +56,9 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
         {onMenuToggle && (
           <button
             onClick={onMenuToggle}
-            className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-lg hover:bg-slate-50 transition-colors"
+            className="md:hidden w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition-colors text-slate-600"
           >
-            ☰
+            <Menu size={18} />
           </button>
         )}
         <h1 className="text-[1.0625rem] font-bold text-slate-900">
@@ -87,7 +88,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
             }}
             className="w-9 h-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-base hover:bg-slate-50 transition-colors"
           >
-            🔔
+            <Bell size={16} className="text-slate-600" />
           </button>
 
           {showNotif && (
@@ -96,7 +97,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
                 <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
               </div>
               <div className="px-4 py-8 text-center">
-                <div className="text-2xl mb-2">🔕</div>
+                <Bell size={24} className="text-slate-300 mx-auto mb-2" />
                 <p className="text-sm text-slate-500">No new notifications</p>
                 <p className="text-xs text-slate-400 mt-1">
                   You&apos;re all caught up!
@@ -134,7 +135,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
                   }}
                   className="w-full text-left px-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-2.5"
                 >
-                  ⚙️ Settings
+                  <Settings size={15} /> Settings
                 </button>
                 <button
                   onClick={() => {
@@ -143,7 +144,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
                   }}
                   className="w-full text-left px-3 py-2 text-sm text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2.5"
                 >
-                  🚪 Sign Out
+                  <LogOut size={15} /> Sign Out
                 </button>
               </div>
             </div>

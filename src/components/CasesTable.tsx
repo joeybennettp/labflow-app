@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { AlertTriangle, Clock } from 'lucide-react';
 import { Case, Doctor, SortColumn, SortDirection } from '@/lib/types';
 import StatusBadge from './StatusBadge';
 
@@ -340,8 +341,8 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick }: Prop
                             : 'text-slate-700'
                       }`}
                     >
-                      {overdue && '⚠ '}
-                      {dueSoon && '⏰ '}
+                      {overdue && <AlertTriangle size={14} className="inline -mt-0.5 mr-1" />}
+                      {dueSoon && <Clock size={14} className="inline -mt-0.5 mr-1" />}
                       {formatDate(c.due)}
                     </td>
                     {isAdmin && (

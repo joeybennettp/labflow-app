@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+import { ClipboardList, AlertTriangle, CheckCircle, DollarSign } from 'lucide-react';
 import { Case } from '@/lib/types';
 
 type Props = {
@@ -7,7 +9,6 @@ type Props = {
 
 export default function StatsGrid({ cases, isAdmin }: Props) {
   const today = new Date().toISOString().split('T')[0];
-
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
   const activeCases = cases.filter((c) => c.status !== 'shipped').length;
@@ -27,20 +28,32 @@ export default function StatsGrid({ cases, isAdmin }: Props) {
     (c) => !c.invoiced && c.status === 'shipped'
   ).length;
 
-  const allStats = [
+  const allStats: {
+    label: string;
+    value: string | number;
+    icon: ReactNode;
+    iconBg: string;
+    iconColor: string;
+    trend: string;
+    trendColor: string;
+    valueColor?: string;
+    adminOnly?: boolean;
+  }[] = [
     {
       label: 'Active Cases',
       value: activeCases,
-      icon: '📋',
+      icon: <ClipboardList size={20} />,
       iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
       trend: `${cases.filter((c) => c.status === 'in_progress').length} in progress`,
       trendColor: 'text-blue-600',
     },
     {
       label: 'Overdue',
       value: overdue,
-      icon: '⚠️',
+      icon: <AlertTriangle size={20} />,
       iconBg: 'bg-red-100',
+      iconColor: 'text-red-600',
       trend: overdue > 0 ? 'Need attention' : dueSoon > 0 ? `${dueSoon} due soon` : 'All on track',
       trendColor: overdue > 0 ? 'text-red-600' : dueSoon > 0 ? 'text-amber-600' : 'text-green-600',
       valueColor: overdue > 0 ? 'text-red-600' : undefined,
@@ -48,16 +61,18 @@ export default function StatsGrid({ cases, isAdmin }: Props) {
     {
       label: 'Ready / Shipped',
       value: readyShipped,
-      icon: '✅',
+      icon: <CheckCircle size={20} />,
       iconBg: 'bg-green-100',
+      iconColor: 'text-green-600',
       trend: `${cases.filter((c) => c.status === 'ready').length} awaiting pickup`,
       trendColor: 'text-green-600',
     },
     {
       label: 'Revenue',
       value: `$${revenue.toLocaleString('en-US', { minimumFractionDigits: 0 })}`,
-      icon: '💰',
+      icon: <DollarSign size={20} />,
       iconBg: 'bg-amber-100',
+      iconColor: 'text-amber-600',
       trend: `${pendingInvoices} pending invoice${pendingInvoices !== 1 ? 's' : ''}`,
       trendColor: 'text-amber-600',
       adminOnly: true,
@@ -87,7 +102,7 @@ export default function StatsGrid({ cases, isAdmin }: Props) {
             </div>
           </div>
           <div
-            className={`w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center text-lg md:text-xl shrink-0 ${stat.iconBg}`}
+            className={`w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 ${stat.iconBg} ${stat.iconColor}`}
           >
             {stat.icon}
           </div>
