@@ -41,5 +41,17 @@ export type PortalCase = {
   updated_at: string;
 };
 
+export type CaseAttachment = {
+  id: string;
+  case_id: string;
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  file_type: string;
+  uploaded_by: string;
+  uploaded_by_role: 'lab' | 'doctor';
+  created_at: string;
+};
+
 export type SortColumn = 'case_number' | 'patient' | 'doctor' | 'type' | 'status' | 'due' | 'price';
 export type SortDirection = 'asc' | 'desc';
