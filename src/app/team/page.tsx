@@ -37,17 +37,25 @@ export default function TeamPage() {
 
   // Fetch all team members
   const fetchMembers = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('user_profiles')
       .select('*')
       .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('fetchMembers error:', error);
+    }
+
     setMembers((data as TeamMember[]) || []);
     setLoading(false);
   }, []);
 
+  // Wait for auth to be ready before fetching — otherwise RLS blocks the query
   useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+    if (!authLoading && isAdmin) {
+      fetchMembers();
+    }
+  }, [fetchMembers, authLoading, isAdmin]);
 
   const adminCount = members.filter((m) => m.role === 'admin').length;
   const isLastAdmin = (member: TeamMember) =>
