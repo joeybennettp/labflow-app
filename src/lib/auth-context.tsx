@@ -157,6 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       subscription.unsubscribe();
       clearTimeout(timeout);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Redirect logic

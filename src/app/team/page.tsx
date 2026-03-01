@@ -80,8 +80,9 @@ export default function TeamPage() {
   // Wait for auth to be ready before fetching — otherwise RLS blocks the query
   useEffect(() => {
     if (!authLoading && isAdmin) {
-      fetchMembers();
-      fetchInvites();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void fetchMembers();
+      void fetchInvites();
     }
   }, [fetchMembers, fetchInvites, authLoading, isAdmin]);
 

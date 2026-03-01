@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Upload, Trash2, FileText, Image, File, Download, X } from 'lucide-react';
+import { Upload, Trash2, FileText, Image as ImageIcon, File, Download, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { CaseAttachment } from '@/lib/types';
 import { logActivity } from '@/lib/activity';
@@ -30,7 +30,7 @@ function isImage(fileType: string): boolean {
 }
 
 function getFileIcon(fileType: string) {
-  if (isImage(fileType)) return <Image size={16} className="text-blue-500" />;
+  if (isImage(fileType)) return <ImageIcon size={16} className="text-blue-500" />;
   if (fileType === 'application/pdf') return <FileText size={16} className="text-red-500" />;
   return <File size={16} className="text-slate-400" />;
 }
@@ -86,7 +86,6 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
 
     try {
       // Generate unique path: caseId/timestamp-filename
-      const ext = file.name.split('.').pop() || 'bin';
       const safeName = file.name
         .replace(/[^a-zA-Z0-9._-]/g, '_')
         .substring(0, 100);

@@ -109,8 +109,8 @@ export default function PortalPage() {
   }, [doctorId, authLoading]);
 
   // Computed stats
-  const today = new Date().toISOString().split('T')[0];
-  const sevenDaysOut = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+  const [today] = useState(() => new Date().toISOString().split('T')[0]);
+  const [sevenDaysOut] = useState(() => new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]);
 
   const activeCases = cases.filter((c) => c.status !== 'shipped').length;
   const inProgressCount = cases.filter((c) => c.status === 'in_progress').length;

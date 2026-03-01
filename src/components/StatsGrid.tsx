@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { ClipboardList, AlertTriangle, CheckCircle, DollarSign } from 'lucide-react';
 import { Case } from '@/lib/types';
 
@@ -8,8 +8,8 @@ type Props = {
 };
 
 export default function StatsGrid({ cases, isAdmin }: Props) {
-  const today = new Date().toISOString().split('T')[0];
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const [today] = useState(() => new Date().toISOString().split('T')[0]);
+  const [tomorrow] = useState(() => new Date(Date.now() + 86400000).toISOString().split('T')[0]);
 
   const activeCases = cases.filter((c) => c.status !== 'shipped').length;
   const overdue = cases.filter(

@@ -55,7 +55,8 @@ export default function DoctorsPage() {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchData();
   }, [fetchData]);
 
   // --- Mutations ---

@@ -52,13 +52,13 @@ export default function ShippingPage() {
     fetchShipped();
   }, [authLoading]);
 
+  const [now] = useState(() => Date.now());
   const filtered = useMemo(() => {
     if (filter === 'all') return cases;
-    const now = Date.now();
     const days = filter === '7days' ? 7 : 30;
     const cutoff = new Date(now - days * 86400000).toISOString();
     return cases.filter((c) => c.shipped_at && c.shipped_at >= cutoff);
-  }, [cases, filter]);
+  }, [cases, filter, now]);
 
   const FILTERS: { key: TimeFilter; label: string }[] = [
     { key: 'all', label: 'All Shipped' },
