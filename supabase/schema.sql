@@ -380,3 +380,61 @@ BEGIN
   RETURN v_role;
 END;
 $$;
+
+-- ============================================
+-- RPC FUNCTIONS (Atomic Inventory)
+-- ============================================
+
+-- Add a material to a case and decrement inventory in one transaction
+CREATE OR REPLACE FUNCTION add_case_material(
+  p_case_id UUID,
+  p_material_id UUID,
+  p_quantity_used NUMERIC
+)
+RETURNS UUID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_id UUID;
+BEGIN
+  INSERT INTO case_materials (case_id, material_id, quantity_used)
+  VALUES (p_case_id, p_material_id, p_quantity_used)
+  RETURNING id INTO v_id;
+
+  UPDATE materials
+  SET quantity = GREATEST(0, quantity - p_quantity_used)
+  WHERE id = p_material_id;
+
+  RETURN v_id;
+END;
+$$;
+
+-- Remove a case material and restore inventory in one transaction
+CREATE OR REPLACE FUNCTION remove_case_material(p_case_material_id UUID)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_material_id UUID;
+  v_quantity_used NUMERIC;
+BEGIN
+  SELECT material_id, quantity_used
+  INTO v_material_id, v_quantity_used
+  FROM case_materials
+  WHERE id = p_case_material_id;
+
+  IF v_material_id IS NULL THEN
+    RAISE EXCEPTION 'Case material not found.';
+  END IF;
+
+  DELETE FROM case_materials WHERE id = p_case_material_id;
+
+  UPDATE materials
+  SET quantity = quantity + v_quantity_used
+  WHERE id = v_material_id;
+END;
+$$;

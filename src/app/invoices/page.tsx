@@ -6,22 +6,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
-import { Case, Doctor } from '@/lib/types';
+import { Case, Doctor, LabSettings } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
 import StatusBadge from '@/components/StatusBadge';
 import generateInvoicePDF from '@/lib/generateInvoicePDF';
 import { logActivity } from '@/lib/activity';
-
-type LabSettings = {
-  id: string;
-  lab_name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  phone: string;
-  email: string;
-};
 
 type InvoiceFilter = 'all' | 'pending' | 'invoiced';
 

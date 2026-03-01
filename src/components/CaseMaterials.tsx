@@ -42,20 +42,11 @@ export default function CaseMaterials({ caseId }: Props) {
     if (!selectedMaterialId) return;
     const qty = parseFloat(qtyUsed) || 1;
 
-    await supabase.from('case_materials').insert({
-      case_id: caseId,
-      material_id: selectedMaterialId,
-      quantity_used: qty,
+    await supabase.rpc('add_case_material', {
+      p_case_id: caseId,
+      p_material_id: selectedMaterialId,
+      p_quantity_used: qty,
     });
-
-    // Optionally decrement inventory
-    const material = allMaterials.find((m) => m.id === selectedMaterialId);
-    if (material) {
-      await supabase
-        .from('materials')
-        .update({ quantity: Math.max(0, Number(material.quantity) - qty) })
-        .eq('id', selectedMaterialId);
-    }
 
     setSelectedMaterialId('');
     setQtyUsed('1');
@@ -63,17 +54,10 @@ export default function CaseMaterials({ caseId }: Props) {
     await fetchCaseMaterials();
   }
 
-  async function handleRemove(id: string, materialId: string, quantityUsed: number) {
-    await supabase.from('case_materials').delete().eq('id', id);
-
-    // Restore inventory
-    const material = allMaterials.find((m) => m.id === materialId);
-    if (material) {
-      await supabase
-        .from('materials')
-        .update({ quantity: Number(material.quantity) + quantityUsed })
-        .eq('id', materialId);
-    }
+  async function handleRemove(id: string) {
+    await supabase.rpc('remove_case_material', {
+      p_case_material_id: id,
+    });
 
     await fetchCaseMaterials();
   }
@@ -115,7 +99,7 @@ export default function CaseMaterials({ caseId }: Props) {
                 </span>
               </div>
               <button
-                onClick={() => handleRemove(cm.id, cm.material_id, Number(cm.quantity_used))}
+                onClick={() => handleRemove(cm.id)}
                 className="w-7 h-7 rounded-md text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors"
                 title="Remove"
               >

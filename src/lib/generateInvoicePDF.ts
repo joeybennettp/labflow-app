@@ -1,16 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Case, Doctor } from './types';
-
-type LabSettings = {
-  lab_name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  phone: string;
-  email: string;
-};
+import { Case, Doctor, LabSettings } from './types';
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00');

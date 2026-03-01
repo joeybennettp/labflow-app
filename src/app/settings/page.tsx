@@ -6,18 +6,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { LabSettings } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
-
-type LabSettings = {
-  id: string;
-  lab_name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  phone: string;
-  email: string;
-};
 
 export default function SettingsPage() {
   const { isAdmin } = useAuth();

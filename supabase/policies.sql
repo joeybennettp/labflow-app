@@ -57,6 +57,12 @@ CREATE POLICY "Lab staff can view all cases"
   TO authenticated
   USING (is_lab_staff(auth.uid()));
 
+-- NOTE: Doctors can SELECT all columns (including price, invoiced) at the RLS
+-- level. Financial field exclusion is enforced in application code via the
+-- PortalCase type, which selects only non-financial columns. Postgres/Supabase
+-- does not support column-level RLS. A future improvement (Phase 4/5) is to
+-- create a doctor_cases_view that excludes financial columns and point the
+-- doctor portal at the view instead.
 CREATE POLICY "Doctors can view own cases"
   ON cases FOR SELECT
   TO authenticated
@@ -109,13 +115,13 @@ CREATE POLICY "Authenticated read lab_settings"
   ON lab_settings FOR SELECT
   USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Authenticated insert lab_settings"
+CREATE POLICY "Lab staff insert lab_settings"
   ON lab_settings FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (is_lab_staff(auth.uid()));
 
-CREATE POLICY "Authenticated update lab_settings"
+CREATE POLICY "Lab staff update lab_settings"
   ON lab_settings FOR UPDATE
-  USING (auth.role() = 'authenticated');
+  USING (is_lab_staff(auth.uid()));
 
 -- ============================================
 -- CASE ATTACHMENTS

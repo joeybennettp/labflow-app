@@ -4,8 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from './supabase';
 import type { User } from '@supabase/supabase-js';
-
-type UserRole = 'admin' | 'tech' | 'doctor';
+import type { UserRole } from './types';
 
 type AuthContextType = {
   user: User | null;

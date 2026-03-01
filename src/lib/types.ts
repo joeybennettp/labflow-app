@@ -116,5 +116,18 @@ export type CaseMaterial = {
   materials?: { name: string; unit: string } | null;
 };
 
+export type LabSettings = {
+  id: string;
+  lab_name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  email: string;
+};
+
+export type UserRole = 'admin' | 'tech' | 'doctor';
+
 export type SortColumn = 'case_number' | 'patient' | 'doctor' | 'type' | 'status' | 'due' | 'price';
 export type SortDirection = 'asc' | 'desc';

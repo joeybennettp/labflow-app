@@ -5,6 +5,7 @@ import { Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { Case, Doctor } from '@/lib/types';
+import { logActivity } from '@/lib/activity';
 import Sidebar from '@/components/Sidebar';
 import CaseDetailModal from '@/components/CaseDetailModal';
 import CaseFormModal, { CaseFormData } from '@/components/CaseFormModal';
@@ -151,6 +152,14 @@ export default function CalendarPage() {
       updatePayload.shipped_at = new Date().toISOString();
     }
     await supabase.from('cases').update(updatePayload).eq('id', id);
+
+    const caseForLog = cases.find((c) => c.id === id);
+    logActivity(supabase, {
+      caseId: id,
+      action: `changed status to ${newStatus.replace(/_/g, ' ')}`,
+      details: { from: caseForLog?.status, to: newStatus },
+    });
+
     await refreshCases();
     setSelectedCase((prev) => (prev && prev.id === id ? { ...prev, status: newStatus } : prev));
   }
@@ -159,6 +168,9 @@ export default function CalendarPage() {
     const caseToDelete = cases.find((c) => c.id === id);
     const confirmed = window.confirm(`Delete case ${caseToDelete?.case_number || ''}?`);
     if (!confirmed) return;
+
+    logActivity(supabase, { caseId: id, action: `deleted case`, details: { case_number: caseToDelete?.case_number } });
+
     await supabase.from('cases').delete().eq('id', id);
     await refreshCases();
     closeAllModals();
@@ -177,6 +189,9 @@ export default function CalendarPage() {
       notes: formData.notes || null,
       status: formData.status,
     }).eq('id', selectedCase.id);
+
+    logActivity(supabase, { caseId: selectedCase.id, action: `edited case`, details: { patient: formData.patient } });
+
     await refreshCases();
     closeAllModals();
   }
