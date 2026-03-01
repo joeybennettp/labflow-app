@@ -49,7 +49,7 @@ LabFlow addresses each of these problems through a single integrated platform:
 **Doctor Management**
 - Maintain a directory of all client doctors and practices
 - View per-doctor case volume and statistics
-- Invite doctors to self-register for portal access
+- Doctors self-register by matching their email to their existing lab record
 
 **Invoicing**
 - Generate PDF invoices per doctor with itemized case details
@@ -68,7 +68,8 @@ LabFlow addresses each of these problems through a single integrated platform:
 **Reports & Analytics**
 - Case status distribution (pie chart)
 - Case volume by type and by doctor (bar charts)
-- Filterable date ranges and export options
+- Revenue over time and per-doctor breakdowns
+- Average turnaround time tracking
 
 **Calendar**
 - Visual calendar view of cases by due date
@@ -76,7 +77,8 @@ LabFlow addresses each of these problems through a single integrated platform:
 
 **Activity Log**
 - Full audit trail of all significant actions (case creation, status changes, file uploads, messages)
-- Filterable by user, action type, and date
+- Filterable by action type (status changes, files, messages)
+- Paginated feed with relative timestamps
 
 **Team Management**
 - Invite staff via email with role assignment (admin or tech)
@@ -85,7 +87,7 @@ LabFlow addresses each of these problems through a single integrated platform:
 
 **Settings**
 - Configure lab name, contact information, and branding
-- Settings visible to doctors in the portal header
+- Lab branding appears on generated invoices and doctor invoice history
 
 ### Doctor Portal (External Clients)
 
@@ -110,23 +112,42 @@ LabFlow's engineering operation is led by **Claude Code (Anthropic's AI coding a
 
 ### Subagent Model
 
-Under Claude Code's direction, specialized subagents manage individual assets and features of the platform:
+Under Claude Code's direction, a two-tier subagent system manages the platform's development. Agent guides are documented in the `agents/` directory, with `agents/CHIEF_ENGINEER.md` as the orchestrator.
+
+**Workflow Agents** handle the development lifecycle:
 
 | Subagent Role | Responsibility |
 |---|---|
 | **Explore Agent** | Codebase research, file discovery, architecture analysis |
 | **Plan Agent** | Feature design, implementation strategy, dependency mapping |
-| **General-Purpose Agent** | Multi-step implementation tasks, complex code searches, cross-cutting concerns |
-| **Build & Test Agents** | Code validation, build verification, regression checks |
+| **Build Agent** | Multi-step implementation, code generation, cross-cutting changes |
+| **Test Agent** | Build verification, lint validation, regression checks |
+
+**Feature Agents** provide domain-specific context for each area of the platform:
+
+| Feature Agent | Scope |
+|---|---|
+| Cases | Case lifecycle, status workflow, attachments, messages, materials |
+| Doctor Portal | Doctor-facing portal, self-registration, read-only case views |
+| Invoicing | Invoice management, PDF generation, doctor invoice history |
+| Inventory | Material catalog, stock tracking, reorder alerts, per-case usage |
+| Shipping | Carrier/tracking collection, shipping tracker, shipped status |
+| Auth | Authentication, role management, route protection, login/signup flows |
+| Database | All tables, functions, triggers, indexes, RLS policies, storage |
+| Team | Staff invitations, role assignment, member management |
+| Reports | Analytics charts, KPI dashboards, revenue tracking |
+| Calendar | Calendar view by due date, day selection, case quick-access |
+| Activity | Audit trail logging, activity feed, action filtering |
+| Settings | Lab identity configuration, branding for invoices |
 
 **Workflow:**
 1. A feature request or bug report is received
 2. Claude Code (Chief Engineer) analyzes the request and determines scope
-3. Subagents are dispatched — often in parallel — to research, plan, or implement
+3. Workflow subagents are dispatched — often in parallel — to research, plan, or implement, referencing the relevant feature agent guides for domain context
 4. All subagent output is reviewed by Claude Code before integration
 5. Claude Code performs final validation, ensures architectural consistency, and commits the change
 
-This structure enables rapid development with consistent quality. The Chief Engineer maintains full context of the codebase (guided by `CLAUDE.md`) while subagents handle focused, parallelizable work.
+This structure enables rapid development with consistent quality. The Chief Engineer maintains full context of the codebase (guided by `CLAUDE.md` and `agents/CHIEF_ENGINEER.md`) while subagents handle focused, parallelizable work.
 
 ### Tech Stack
 
