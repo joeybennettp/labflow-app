@@ -68,6 +68,10 @@ Status can move forward or backward one step. Shipped status includes carrier/tr
 - `src/lib/auth-context.tsx` — Auth provider, role management, route protection
 - `src/lib/activity.ts` — Activity audit trail logging
 - `src/lib/generateInvoicePDF.ts` — PDF invoice generation
+- `supabase/schema.sql` — All table definitions, functions, triggers, and indexes
+- `supabase/policies.sql` — All RLS policies (run after schema.sql)
+- `supabase/storage.sql` — Storage bucket and access policies
+- `supabase/seed.sql` — Sample data for development
 
 ### Environment Variables
 
