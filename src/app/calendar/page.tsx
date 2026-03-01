@@ -267,17 +267,19 @@ export default function CalendarPage() {
                         }`}>
                           {cell.day}
                         </div>
-                        {/* Case dots */}
-                        <div className="flex flex-wrap gap-0.5">
-                          {dayCases.slice(0, 6).map((c) => (
-                            <div
+                        {/* Case banners */}
+                        <div className="flex flex-col gap-0.5">
+                          {dayCases.slice(0, 3).map((c) => (
+                            <button
                               key={c.id}
-                              className={`w-2 h-2 rounded-full ${STATUS_COLORS[c.status]} ${c.rush ? 'ring-1 ring-red-400' : ''}`}
-                              title={`${c.case_number} - ${c.patient}`}
-                            />
+                              onClick={(e) => { e.stopPropagation(); handleCaseClick(c); }}
+                              className={`w-full text-left px-1 py-0.5 rounded text-[0.6875rem] leading-tight font-mono font-semibold text-white truncate hover:opacity-80 transition-opacity ${STATUS_COLORS[c.status]} ${c.rush ? 'ring-1 ring-red-400' : ''}`}
+                            >
+                              {c.case_number}
+                            </button>
                           ))}
-                          {dayCases.length > 6 && (
-                            <span className="text-[0.5625rem] font-bold text-slate-400">+{dayCases.length - 6}</span>
+                          {dayCases.length > 3 && (
+                            <span className="text-[0.5625rem] font-bold text-slate-400">+{dayCases.length - 3} more</span>
                           )}
                         </div>
                       </div>
