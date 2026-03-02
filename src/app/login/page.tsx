@@ -109,7 +109,7 @@ export default function LoginPage() {
             Precision Lab<br />Management
           </h1>
           <p className="hidden md:block text-blue-200/70 text-sm mb-8 leading-relaxed">
-            Streamline your dental lab workflow with real-time case tracking, automated invoicing, and seamless doctor collaboration.
+            One platform for labs and doctors. Track cases in real time, manage invoicing, and collaborate seamlessly.
           </p>
 
           {/* Feature bullets (desktop) */}
@@ -148,7 +148,7 @@ export default function LoginPage() {
           {/* Desktop heading */}
           <div className="hidden md:block mb-8">
             <h2 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h2>
-            <p className="text-sm text-slate-500">Sign in to your lab dashboard</p>
+            <p className="text-sm text-slate-500">Sign in to your LabFlow dashboard — labs and doctors welcome</p>
           </div>
 
           {/* Error */}
@@ -220,12 +220,12 @@ export default function LoginPage() {
           </div>
 
           <div className="text-center mt-4 pt-4 border-t border-slate-100">
-            <p className="text-xs text-slate-500 mb-2">Are you a referring doctor?</p>
+            <p className="text-xs text-slate-500 mb-2">Doctor without an account yet?</p>
             <Link
               href="/portal/register"
               className="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
             >
-              Set up your Doctor Portal account →
+              Register for the Doctor Portal →
             </Link>
           </div>
         </div>
