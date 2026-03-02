@@ -139,6 +139,7 @@ Under Claude Code's direction, a two-tier subagent system manages the platform's
 | Calendar | Calendar view by due date, day selection, case quick-access |
 | Activity | Audit trail logging, activity feed, action filtering |
 | Settings | Lab identity configuration, branding for invoices |
+| Marketing & UI | Brand identity, login/signup design, design tokens, animations |
 
 **Workflow:**
 1. A feature request or bug report is received
