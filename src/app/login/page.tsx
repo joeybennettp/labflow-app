@@ -103,7 +103,7 @@ export default function LoginPage() {
 
           {/* Headline (desktop) */}
           <h1
-            className="hidden md:block text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4"
+            className="hidden md:block text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Precision Dental<br />Lab Management
