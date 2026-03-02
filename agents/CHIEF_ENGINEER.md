@@ -49,7 +49,7 @@ Before any commit, the Chief Engineer must verify:
 
 ## Feature Agent Ownership
 
-When a task touches a specific feature area, the Chief Engineer should reference the corresponding feature agent guide for domain-specific context:
+When a task touches a specific feature area, the Chief Engineer **must dispatch to** the corresponding feature agent — not just reference the guide:
 
 | Feature | Guide | Primary Owner |
 |---|---|---|
@@ -69,7 +69,23 @@ When a task touches a specific feature area, the Chief Engineer should reference
 
 ## Mandatory Routing Rules
 
-- **All UI/visual/styling changes** — including design tokens, component styling, CSS, animations, glass effects, card systems, and layout polish — MUST be routed through the **Marketing & UI Agent** (`agents/features/MARKETING_UI.md`). The Chief Engineer reviews the output before committing. This applies even for small or "obvious" styling tweaks. Never apply UI changes directly.
+**All domain-specific changes MUST be routed through the owning feature agent.** The Chief Engineer reviews output before committing. This applies even for small or "obvious" changes. Never implement domain-specific work directly — always dispatch to the appropriate agent.
+
+| Domain | Route To | Never Do Directly |
+|---|---|---|
+| UI/visual/styling (design tokens, CSS, animations, card systems, layout polish) | Marketing & UI Agent | Apply styling changes |
+| Case lifecycle (status, attachments, messages, materials) | Cases Agent | Modify case logic |
+| Auth & roles (login, signup, role detection, route protection) | Auth Agent | Change auth flows |
+| Database (schema, RLS policies, functions, triggers, indexes) | Database Agent | Alter schema or policies |
+| Doctor portal (portal views, registration, PortalCase) | Doctor Portal Agent | Modify portal pages |
+| Invoicing (invoice management, PDF generation, PortalInvoiceCase) | Invoicing Agent | Change invoice logic |
+| Inventory (materials catalog, stock tracking, case-material junction) | Inventory Agent | Modify inventory |
+| Shipping (carrier/tracking, shipped status) | Shipping Agent | Change shipping logic |
+| Team management (invites, role assignment, member CRUD) | Team Agent | Modify team features |
+| Reports & analytics (charts, StatsGrid, AnalyticsGrid) | Reports Agent | Change report logic |
+| Calendar (grid, day selection, case quick-access) | Calendar Agent | Modify calendar |
+| Activity audit log (logActivity, activity feed) | Activity Agent | Change activity logging |
+| Lab settings (lab identity config, lab_settings table) | Settings Agent | Modify settings |
 
 ## References
 

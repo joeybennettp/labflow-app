@@ -54,4 +54,4 @@ Step-by-step implementation (ordered by dependency)
 - New Supabase tables require RLS policies. Always plan for both lab staff and doctor access levels.
 - Admin-only features must check `isAdmin` and be hidden from the Sidebar for non-admin users.
 - Doctor portal features must use `PortalCase` (no financial data) unless explicitly showing invoices (`PortalInvoiceCase`).
-- **UI/visual/styling changes** must be routed through the **Marketing & UI Agent** (`agents/features/MARKETING_UI.md`). If a plan includes styling work, it must specify Marketing & UI Agent dispatch — never plan for the Build Agent to handle styling directly.
+- **All domain-specific changes** must be routed through the owning feature agent (see `agents/CHIEF_ENGINEER.md` Mandatory Routing Rules). Plans must specify which feature agent(s) to dispatch — never plan for the Build Agent to handle domain-specific work directly.

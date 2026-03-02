@@ -12,7 +12,7 @@ Multi-step implementation, code generation, and cross-cutting changes. The Build
 
 ## Routing Constraint
 
-**Do not implement UI/visual/styling changes directly.** All design token changes, component styling, CSS, animations, glass effects, card systems, and layout polish must be routed through the **Marketing & UI Agent** (`agents/features/MARKETING_UI.md`) and reviewed by the Chief Engineer before committing. This rule applies even for small tweaks.
+**The Build Agent executes plans — it does not own any feature domain.** All domain-specific changes must be routed through the owning feature agent and reviewed by the Chief Engineer before committing. The Build Agent should only implement work that has been dispatched by the Chief Engineer after consulting the relevant feature agent. See the Mandatory Routing Rules in `agents/CHIEF_ENGINEER.md` for the full ownership table. This rule applies even for small or "obvious" changes.
 
 ## Coding Standards
 

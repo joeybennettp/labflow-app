@@ -82,4 +82,18 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 ## Workflow Rules
 
-- **All UI/visual/styling changes** (design tokens, component styling, CSS, animations, glass effects, card systems, layout polish) must be dispatched through the Marketing & UI subagent (`agents/features/MARKETING_UI.md`) and reviewed by the Chief Engineer agent before committing. Never apply UI changes directly — even if the change seems small.
+- **All changes must be routed through the appropriate feature agent** and reviewed by the Chief Engineer before committing. Never implement domain-specific changes directly — always dispatch to the owning agent, even for small tasks. See `agents/CHIEF_ENGINEER.md` for the full ownership table.
+- Key routing examples:
+  - **UI/visual/styling** → Marketing & UI Agent (`agents/features/MARKETING_UI.md`)
+  - **Case lifecycle, status, attachments, messages** → Cases Agent (`agents/features/CASES.md`)
+  - **Auth, roles, login/signup flows** → Auth Agent (`agents/features/AUTH.md`)
+  - **Database schema, RLS, functions, triggers** → Database Agent (`agents/features/DATABASE.md`)
+  - **Doctor portal views, registration** → Doctor Portal Agent (`agents/features/DOCTOR_PORTAL.md`)
+  - **Invoicing, PDF generation** → Invoicing Agent (`agents/features/INVOICING.md`)
+  - **Inventory, materials, stock** → Inventory Agent (`agents/features/INVENTORY.md`)
+  - **Shipping, carrier/tracking** → Shipping Agent (`agents/features/SHIPPING.md`)
+  - **Team invites, role assignment** → Team Agent (`agents/features/TEAM.md`)
+  - **Reports, charts, analytics** → Reports Agent (`agents/features/REPORTS.md`)
+  - **Calendar** → Calendar Agent (`agents/features/CALENDAR.md`)
+  - **Activity audit log** → Activity Agent (`agents/features/ACTIVITY.md`)
+  - **Lab settings** → Settings Agent (`agents/features/SETTINGS.md`)
