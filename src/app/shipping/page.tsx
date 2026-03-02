@@ -78,7 +78,7 @@ export default function ShippingPage() {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -102,34 +102,34 @@ export default function ShippingPage() {
             <>
               {/* Stats row */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
-                <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-extrabold text-slate-900">{cases.length}</div>
                     <div className="text-sm text-slate-500 mt-1">Total Shipped</div>
                   </div>
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
+                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
                     <Truck size={20} />
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-extrabold text-slate-900">
                       {cases.filter((c) => c.tracking_number).length}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">With Tracking</div>
                   </div>
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-green-100 text-green-600">
+                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-green-100 text-green-600">
                     <ExternalLink size={20} />
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between hidden sm:flex">
+                <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between hidden sm:flex">
                   <div>
                     <div className="text-2xl font-extrabold text-slate-900">
                       {cases.filter((c) => c.shipping_carrier === 'Hand Delivery').length}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">Hand Delivered</div>
                   </div>
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
                     <Package size={20} />
                   </div>
                 </div>
@@ -153,11 +153,11 @@ export default function ShippingPage() {
               </div>
 
               {/* Shipped cases table */}
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+              <div className="card-base overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-slate-200 bg-slate-50">
+                      <tr className="border-b border-slate-200/70 bg-slate-50/70">
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                           Case #
                         </th>

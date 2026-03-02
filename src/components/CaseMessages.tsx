@@ -128,7 +128,7 @@ export default function CaseMessages({ caseId, role }: Props) {
       )}
 
       {/* Messages thread */}
-      <div className="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+      <div className="bg-slate-50 rounded-lg border border-slate-200/70 overflow-hidden">
         <div className="max-h-64 overflow-y-auto p-3 space-y-3">
           {loading ? (
             <p className="text-sm text-slate-400 text-center py-4">Loading messages...</p>
@@ -185,7 +185,7 @@ export default function CaseMessages({ caseId, role }: Props) {
         </div>
 
         {/* Input */}
-        <div className="border-t border-slate-200 p-2 flex items-end gap-2 bg-white">
+        <div className="border-t border-slate-200/70 p-2 flex items-end gap-2 bg-white">
           <textarea
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}

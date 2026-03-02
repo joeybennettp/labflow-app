@@ -66,7 +66,7 @@ export default function InviteTeamMemberModal({ onSave, onClose }: Props) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="newmember@yourlab.com"
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             autoFocus
           />
           <p className="text-xs text-slate-400 mt-1">
@@ -81,7 +81,7 @@ export default function InviteTeamMemberModal({ onSave, onClose }: Props) {
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as 'admin' | 'tech')}
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100 bg-white"
+            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200 bg-white"
           >
             <option value="tech">Technician</option>
             <option value="admin">Admin</option>

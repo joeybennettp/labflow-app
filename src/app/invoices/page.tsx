@@ -106,7 +106,7 @@ export default function InvoicesPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -149,7 +149,7 @@ export default function InvoicesPage() {
             <>
               {/* Summary cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white border border-slate-200 rounded-lg p-5">
+                <div className="card-interactive hover:card-interactive-hover p-5">
                   <div className="text-sm text-slate-500 mb-1">
                     Pending Invoices
                   </div>
@@ -160,7 +160,7 @@ export default function InvoicesPage() {
                     {cases.filter((c) => !c.invoiced).length} cases
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-lg p-5">
+                <div className="card-interactive hover:card-interactive-hover p-5">
                   <div className="text-sm text-slate-500 mb-1">
                     Invoiced
                   </div>
@@ -171,7 +171,7 @@ export default function InvoicesPage() {
                     {cases.filter((c) => c.invoiced).length} cases
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-lg p-5">
+                <div className="card-interactive hover:card-interactive-hover p-5">
                   <div className="text-sm text-slate-500 mb-1">
                     Total Revenue
                   </div>
@@ -185,8 +185,8 @@ export default function InvoicesPage() {
               </div>
 
               {/* Table */}
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-                <div className="p-4 border-b border-slate-200 flex items-center justify-between flex-wrap gap-3">
+              <div className="card-base overflow-hidden">
+                <div className="p-4 border-b border-slate-200/70 flex items-center justify-between flex-wrap gap-3">
                   <span className="text-[0.9375rem] font-bold text-slate-900">
                     Invoice Tracker
                   </span>
@@ -211,25 +211,25 @@ export default function InvoicesPage() {
                   <table className="w-full">
                     <thead>
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Case #
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Patient
                         </th>
-                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Doctor
                         </th>
-                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Restoration
                         </th>
-                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Status
                         </th>
-                        <th className="hidden md:table-cell px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="hidden md:table-cell px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Price
                         </th>
-                        <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200">
+                        <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wide text-slate-500 bg-slate-50/70 border-b border-slate-200/70">
                           Invoiced
                         </th>
                       </tr>

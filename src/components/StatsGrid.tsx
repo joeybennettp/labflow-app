@@ -86,7 +86,7 @@ export default function StatsGrid({ cases, isAdmin }: Props) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between"
+          className="card-interactive hover:card-interactive-hover p-3 md:p-5 flex items-start justify-between"
         >
           <div>
             <div
@@ -102,7 +102,7 @@ export default function StatsGrid({ cases, isAdmin }: Props) {
             </div>
           </div>
           <div
-            className={`w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 ${stat.iconBg} ${stat.iconColor}`}
+            className={`w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 ${stat.iconBg} ${stat.iconColor}`}
           >
             {stat.icon}
           </div>

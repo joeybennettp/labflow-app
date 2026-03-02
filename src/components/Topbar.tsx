@@ -50,7 +50,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
   }, []);
 
   return (
-    <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+    <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
       <div className="flex items-center gap-3">
         {/* Hamburger — mobile only */}
         {onMenuToggle && (
@@ -73,7 +73,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
         {onNewCase && (
           <button
             onClick={onNewCase}
-            className="px-3 md:px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors flex items-center gap-1.5"
+            className="px-3 md:px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors flex items-center gap-1.5 shadow-sm shadow-brand-600/20 hover:shadow-md"
           >
             <span className="hidden sm:inline">+</span> New Case
           </button>
@@ -92,7 +92,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
           </button>
 
           {showNotif && (
-            <div className="absolute right-0 top-11 w-72 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+            <div className="absolute right-0 top-11 w-72 bg-white border border-slate-200/80 rounded-xl shadow-lg z-50 overflow-hidden" style={{ animation: 'slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <div className="px-4 py-3 border-b border-slate-100">
                 <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
               </div>
@@ -120,7 +120,7 @@ export default function Topbar({ onNewCase, onMenuToggle }: Props) {
           </button>
 
           {showProfile && (
-            <div className="absolute right-0 top-11 w-56 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+            <div className="absolute right-0 top-11 w-56 bg-white border border-slate-200/80 rounded-xl shadow-lg z-50 overflow-hidden" style={{ animation: 'slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <div className="px-4 py-3 border-b border-slate-100">
                 <p className="text-sm font-bold text-slate-900 truncate">
                   {user?.email || 'Unknown'}

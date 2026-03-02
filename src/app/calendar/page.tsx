@@ -201,7 +201,7 @@ export default function CalendarPage() {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -244,9 +244,9 @@ export default function CalendarPage() {
               </div>
 
               {/* Calendar grid */}
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-5">
+              <div className="card-base overflow-hidden mb-5">
                 {/* Day headers */}
-                <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
+                <div className="grid grid-cols-7 border-b border-slate-200/70 bg-slate-50/70">
                   {DAYS.map((d) => (
                     <div key={d} className="px-1 py-2 text-center text-xs font-semibold text-slate-500 uppercase">
                       {d}
@@ -315,8 +315,8 @@ export default function CalendarPage() {
 
               {/* Selected day cases */}
               {selectedDay && (
-                <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+                <div className="card-base overflow-hidden">
+                  <div className="px-4 py-3 border-b border-slate-200/70 bg-slate-50/70">
                     <h3 className="text-sm font-bold text-slate-900">
                       Cases due{' '}
                       {new Date(selectedDay + 'T00:00:00').toLocaleDateString('en-US', {

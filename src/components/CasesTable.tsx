@@ -190,7 +190,7 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick, typeFi
   }, [cases, filter, search, doctorFilter, dateFrom, dateTo, sortBy, sortDir, typeFilter]);
 
   return (
-    <div ref={tableRef} className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+    <div ref={tableRef} className="card-base overflow-hidden">
       {/* Header with filters and search */}
       <div className="p-3 md:p-4 border-b border-slate-200 space-y-3">
         {/* Active type filter chip */}
@@ -227,7 +227,7 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick, typeFi
                 onClick={() => setFilter(f.key)}
                 className={`px-2.5 md:px-3 py-1.5 rounded-lg text-[0.75rem] md:text-[0.8125rem] font-medium border transition-colors ${
                   filter === f.key
-                    ? 'bg-brand-600 text-white border-brand-600'
+                    ? 'bg-brand-600 text-white border-brand-600 shadow-sm shadow-brand-600/20'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -298,7 +298,7 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick, typeFi
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className={`px-3 md:px-4 py-3 text-left text-xs font-bold uppercase tracking-wide bg-slate-50 border-b border-slate-200 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
+                    className={`px-3 md:px-4 py-3 text-left text-xs font-bold uppercase tracking-wide bg-slate-50/70 border-b border-slate-200/70 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
                       isActive ? 'text-blue-600' : 'text-slate-500'
                     } ${col.key === 'price' ? 'text-right' : ''} ${
                       col.hideOnMobile ? 'hidden md:table-cell' : ''
@@ -329,7 +329,7 @@ export default function CasesTable({ cases, doctors, isAdmin, onRowClick, typeFi
                   <tr
                     key={c.id}
                     onClick={() => onRowClick?.(c)}
-                    className={`hover:bg-slate-50 transition-colors cursor-pointer ${
+                    className={`hover:bg-brand-50/40 transition-colors cursor-pointer ${
                       overdue
                         ? 'bg-red-50 hover:bg-red-100'
                         : c.rush

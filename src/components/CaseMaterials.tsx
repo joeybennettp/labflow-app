@@ -88,7 +88,7 @@ export default function CaseMaterials({ caseId }: Props) {
           {caseMaterials.map((cm) => (
             <div
               key={cm.id}
-              className="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-lg border border-slate-100 text-sm"
+              className="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-lg border border-slate-100/70 text-sm"
             >
               <div>
                 <span className="font-medium text-slate-800">
@@ -112,13 +112,13 @@ export default function CaseMaterials({ caseId }: Props) {
 
       {/* Add material form */}
       {showAdd ? (
-        <div className="flex items-end gap-2 bg-slate-50 rounded-lg border border-slate-200 p-3">
+        <div className="flex items-end gap-2 bg-slate-50 rounded-lg border border-slate-200/70 p-3">
           <div className="flex-1">
             <label className="block text-xs font-semibold text-slate-600 mb-1">Material</label>
             <select
               value={selectedMaterialId}
               onChange={(e) => setSelectedMaterialId(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             >
               <option value="">Select material...</option>
               {allMaterials.map((m) => (
@@ -136,7 +136,7 @@ export default function CaseMaterials({ caseId }: Props) {
               onChange={(e) => setQtyUsed(e.target.value)}
               min="0.01"
               step="0.01"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           <button

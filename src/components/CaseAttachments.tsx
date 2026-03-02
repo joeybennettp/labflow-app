@@ -242,10 +242,10 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors mb-3 ${
+        className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors mb-3 ${
           dragOver
             ? 'border-brand-400 bg-brand-50'
-            : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+            : 'border-slate-200/70 hover:border-slate-300 hover:bg-slate-50'
         }`}
       >
         <input
@@ -284,7 +284,7 @@ export default function CaseAttachments({ caseId, role = 'lab' }: Props) {
             <div
               key={att.id}
               onClick={() => handlePreview(att)}
-              className="flex items-center gap-3 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100 group cursor-pointer hover:bg-slate-100 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100/70 group cursor-pointer hover:bg-slate-100 transition-colors"
             >
               {/* Thumbnail or icon */}
               <div className="w-10 h-10 bg-white border border-slate-200 rounded-md flex items-center justify-center overflow-hidden shrink-0 group-hover:border-brand-300 transition-colors">

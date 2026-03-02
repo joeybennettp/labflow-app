@@ -83,7 +83,7 @@ export default function SettingsPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -104,7 +104,7 @@ export default function SettingsPage() {
           ) : (
             <div className="max-w-2xl">
               {/* Lab Information Section */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-6 mb-6">
+              <div className="card-base p-4 md:p-6 mb-6 !rounded-xl">
                 <h2 className="text-sm font-bold text-slate-900 mb-1">
                   Lab Information
                 </h2>
@@ -124,7 +124,7 @@ export default function SettingsPage() {
                       value={labName}
                       onChange={(e) => setLabName(e.target.value)}
                       placeholder="e.g. Pacific Dental Lab"
-                      className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                     />
                   </div>
 
@@ -138,7 +138,7 @@ export default function SettingsPage() {
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="123 Main Street"
-                      className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                     />
                   </div>
 
@@ -153,7 +153,7 @@ export default function SettingsPage() {
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="Los Angeles"
-                        className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                       />
                     </div>
                     <div>
@@ -165,7 +165,7 @@ export default function SettingsPage() {
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                         placeholder="CA"
-                        className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                       />
                     </div>
                     <div>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
                         value={zip}
                         onChange={(e) => setZip(e.target.value)}
                         placeholder="90001"
-                        className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                       />
                     </div>
                   </div>
@@ -193,7 +193,7 @@ export default function SettingsPage() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="(555) 123-4567"
-                        className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                       />
                     </div>
                     <div>
@@ -205,7 +205,7 @@ export default function SettingsPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="info@yourlab.com"
-                        className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                       />
                     </div>
                   </div>
@@ -229,7 +229,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Account Section */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4 md:p-6">
+              <div className="card-base p-4 md:p-6 !rounded-xl">
                 <h2 className="text-sm font-bold text-slate-900 mb-1">
                   Account
                 </h2>

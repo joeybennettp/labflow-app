@@ -152,7 +152,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
               value={patient}
               onChange={(e) => setPatient(e.target.value)}
               placeholder="e.g. John Smith"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           <div>
@@ -163,7 +163,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
               required
               value={doctorId}
               onChange={(e) => setDoctorId(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100 bg-white"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200 bg-white"
             >
               {doctors.map((d) => (
                 <option key={d.id} value={d.id}>
@@ -184,7 +184,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
               required
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100 bg-white"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200 bg-white"
             >
               {Object.entries(RESTORATION_GROUPS).map(([group, types]) => (
                 <optgroup key={group} label={group}>
@@ -206,7 +206,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
               value={shade}
               onChange={(e) => setShade(e.target.value)}
               placeholder="e.g. A2, BL2, -"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
               required
               value={due}
               onChange={(e) => setDue(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           {isAdmin && (
@@ -237,7 +237,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
               />
             </div>
           )}
@@ -253,7 +253,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as Case['status'])}
-                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100 bg-white"
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200 bg-white"
               >
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -288,7 +288,7 @@ export default function CaseFormModal({ mode, caseData, doctors, isAdmin, onSave
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
             placeholder="Additional case details, instructions, etc."
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100 resize-vertical"
+            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200 resize-vertical"
           />
         </div>
       </form>

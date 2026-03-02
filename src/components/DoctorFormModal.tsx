@@ -91,7 +91,7 @@ export default function DoctorFormModal({ mode, doctorData, onSave, onClose }: P
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Dr. Sarah Chen"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           <div>
@@ -104,7 +104,7 @@ export default function DoctorFormModal({ mode, doctorData, onSave, onClose }: P
               value={practice}
               onChange={(e) => setPractice(e.target.value)}
               placeholder="e.g. Bright Smile Dental"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function DoctorFormModal({ mode, doctorData, onSave, onClose }: P
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="doctor@practice.com"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           <div>
@@ -132,7 +132,7 @@ export default function DoctorFormModal({ mode, doctorData, onSave, onClose }: P
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(555) 123-4567"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
         </div>

@@ -107,7 +107,7 @@ export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4 mb-6">
       {/* Cases by Status — Donut */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+      <div className="card-base p-4 md:p-5">
         <h3 className="text-sm font-bold text-slate-900 mb-4">
           Cases by Status
         </h3>
@@ -131,9 +131,10 @@ export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
               <Tooltip
                 formatter={(value) => [`${value} cases`, '']}
                 contentStyle={{
-                  borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(226,232,240,0.7)',
                   fontSize: '13px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                 }}
               />
               <Legend
@@ -157,7 +158,7 @@ export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
 
       {/* Revenue by Month — Bar (admin only) */}
       {isAdmin && (
-        <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+        <div className="card-base p-4 md:p-5">
           <h3 className="text-sm font-bold text-slate-900 mb-4">
             Revenue by Month
           </h3>
@@ -179,9 +180,10 @@ export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
               <Tooltip
                 formatter={(value) => [`$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 'Revenue']}
                 contentStyle={{
-                  borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(226,232,240,0.7)',
                   fontSize: '13px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                 }}
               />
               <Bar dataKey="revenue" fill="#2563eb" radius={[4, 4, 0, 0]} />
@@ -191,7 +193,7 @@ export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
       )}
 
       {/* Cases by Restoration Type — Horizontal Bar */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 lg:col-span-2">
+      <div className="card-base p-4 md:p-5 lg:col-span-2">
         <h3 className="text-sm font-bold text-slate-900 mb-4">
           Cases by Restoration Type
         </h3>
@@ -231,9 +233,10 @@ export default function AnalyticsGrid({ cases, isAdmin, onTypeClick }: Props) {
               <Tooltip
                 formatter={(value) => [`${value} cases`, '']}
                 contentStyle={{
-                  borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(226,232,240,0.7)',
                   fontSize: '13px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                 }}
               />
               <Bar

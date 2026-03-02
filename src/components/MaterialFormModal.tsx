@@ -82,7 +82,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Zirconia Disc 98mm"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
               required
             />
           </div>
@@ -93,7 +93,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
               value={sku}
               onChange={(e) => setSku(e.target.value)}
               placeholder="e.g. ZD-98-001"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             >
               <option value="">Select...</option>
               {CATEGORIES.map((c) => (
@@ -118,7 +118,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
             <select
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             >
               {UNITS.map((u) => (
                 <option key={u} value={u}>{u}</option>
@@ -137,7 +137,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
               onChange={(e) => setQuantity(e.target.value)}
               min="0"
               step="0.01"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           <div>
@@ -148,7 +148,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
               onChange={(e) => setReorderLevel(e.target.value)}
               min="0"
               step="0.01"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
           <div>
@@ -159,7 +159,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
               onChange={(e) => setUnitCost(e.target.value)}
               min="0"
               step="0.01"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
             />
           </div>
         </div>
@@ -172,7 +172,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
             value={supplier}
             onChange={(e) => setSupplier(e.target.value)}
             placeholder="e.g. Ivoclar Vivadent"
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
           />
         </div>
 
@@ -184,7 +184,7 @@ export default function MaterialFormModal({ material, onSave, onClose }: Props) 
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder="Optional notes about this material..."
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100 resize-none"
+            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200 resize-none"
           />
         </div>
       </form>

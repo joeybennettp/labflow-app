@@ -125,7 +125,7 @@ export default function ActivityPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -164,7 +164,7 @@ export default function ActivityPage() {
               </div>
 
               {/* Activity feed */}
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+              <div className="card-base overflow-hidden">
                 {filtered.length === 0 ? (
                   <div className="px-4 py-16 text-center">
                     <History size={32} className="text-slate-300 mx-auto mb-2" />

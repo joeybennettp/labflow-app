@@ -49,9 +49,9 @@ export default function Sidebar({ open, onClose }: Props) {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-slate-700/50 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
-          <div className="w-8 h-8 bg-brand-600 rounded-md flex items-center justify-center text-white text-sm font-black">
+          <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white text-sm font-black shadow-sm shadow-brand-500/30">
             LF
           </div>
           <span className="text-white font-extrabold text-lg tracking-tight">
@@ -81,9 +81,9 @@ export default function Sidebar({ open, onClose }: Props) {
               key={item.label}
               href={item.href}
               onClick={onClose}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 mb-0.5 ${
                 isActive
-                  ? 'bg-brand-600 text-white'
+                  ? 'glass-sidebar-active text-white border border-white/[0.08]'
                   : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200'
               }`}
             >
@@ -110,9 +110,9 @@ export default function Sidebar({ open, onClose }: Props) {
               key={item.label}
               href={item.href}
               onClick={onClose}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-0.5 ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 mb-0.5 ${
                 pathname === item.href
-                  ? 'bg-brand-600 text-white'
+                  ? 'glass-sidebar-active text-white border border-white/[0.08]'
                   : 'text-slate-400 hover:bg-white/[0.07] hover:text-slate-200'
               }`}
             >
@@ -124,9 +124,9 @@ export default function Sidebar({ open, onClose }: Props) {
       </nav>
 
       {/* Footer - User Info + Sign Out */}
-      <div className="px-4 py-4 border-t border-slate-700/50">
+      <div className="px-4 py-4 border-t border-white/[0.08]">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 bg-brand-600 rounded-lg flex items-center justify-center text-white text-sm font-extrabold shrink-0">
+          <div className="w-9 h-9 bg-brand-600 rounded-lg flex items-center justify-center text-white text-sm font-extrabold shrink-0 ring-1 ring-white/10">
             {user?.email?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className="min-w-0">
@@ -152,7 +152,7 @@ export default function Sidebar({ open, onClose }: Props) {
   return (
     <>
       {/* Desktop sidebar — always visible at md+ */}
-      <aside className="hidden md:flex w-60 h-screen bg-slate-900 flex-col shrink-0">
+      <aside className="hidden md:flex w-60 h-screen sidebar-gradient flex-col shrink-0">
         {sidebarContent}
       </aside>
 
@@ -160,7 +160,7 @@ export default function Sidebar({ open, onClose }: Props) {
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-          <aside className="relative w-60 h-full bg-slate-900 flex flex-col">
+          <aside className="relative w-60 h-full sidebar-gradient flex flex-col">
             {sidebarContent}
           </aside>
         </div>

@@ -160,7 +160,7 @@ export default function TeamPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -211,7 +211,7 @@ export default function TeamPage() {
                     {pendingInvites.map((invite) => (
                       <div
                         key={invite.id}
-                        className="bg-white border border-dashed border-slate-300 rounded-lg p-4 flex items-center justify-between gap-3"
+                        className="card-base border-dashed !border-slate-300 p-4 flex items-center justify-between gap-3"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-medium text-slate-700 truncate">
@@ -239,10 +239,10 @@ export default function TeamPage() {
                 {members.map((member) => (
                   <div
                     key={member.id}
-                    className={`bg-white border rounded-lg p-5 ${
+                    className={`card-interactive hover:card-interactive-hover p-5 ${
                       isSelf(member)
-                        ? 'border-brand-200 ring-1 ring-brand-100'
-                        : 'border-slate-200'
+                        ? '!border-brand-200 ring-1 ring-brand-100'
+                        : ''
                     }`}
                   >
                     {/* Header */}

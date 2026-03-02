@@ -119,7 +119,7 @@ export default function DoctorsPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -155,7 +155,7 @@ export default function DoctorsPage() {
                 {doctors.map((doc) => (
                   <div
                     key={doc.id}
-                    className="bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition-shadow"
+                    className="card-interactive hover:card-interactive-hover p-5"
                   >
                     {/* Header */}
                     <div className="flex items-start gap-3 mb-4">

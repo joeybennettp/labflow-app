@@ -189,16 +189,17 @@ export default function ReportsPage() {
   });
 
   const tooltipStyle = {
-    borderRadius: '8px',
-    border: '1px solid #e2e8f0',
+    borderRadius: '10px',
+    border: '1px solid rgba(226,232,240,0.7)',
     fontSize: '13px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -225,7 +226,7 @@ export default function ReportsPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
               {/* 1. Cases by Month */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+              <div className="card-base p-4 md:p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-4">Cases by Month</h3>
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={casesByMonth}>
@@ -239,7 +240,7 @@ export default function ReportsPage() {
               </div>
 
               {/* 2. Revenue Over Time (admin) */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+              <div className="card-base p-4 md:p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-4">Revenue Over Time</h3>
                 <ResponsiveContainer width="100%" height={280}>
                   <LineChart data={revenueOverTime}>
@@ -253,7 +254,7 @@ export default function ReportsPage() {
               </div>
 
               {/* 3. Cases per Doctor */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+              <div className="card-base p-4 md:p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-4">Cases per Doctor</h3>
                 <ResponsiveContainer width="100%" height={Math.max(240, casesPerDoctor.length * 36)}>
                   <BarChart data={casesPerDoctor} layout="vertical" margin={{ left: 20 }}>
@@ -267,7 +268,7 @@ export default function ReportsPage() {
               </div>
 
               {/* 4. Revenue by Doctor (admin) */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+              <div className="card-base p-4 md:p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-4">Revenue by Doctor</h3>
                 <ResponsiveContainer width="100%" height={Math.max(240, revenueByDoctor.length * 36)}>
                   <BarChart data={revenueByDoctor} layout="vertical" margin={{ left: 20 }}>
@@ -281,7 +282,7 @@ export default function ReportsPage() {
               </div>
 
               {/* 5. Average Turnaround */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+              <div className="card-base p-4 md:p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-4">Avg. Turnaround Time (Days)</h3>
                 <ResponsiveContainer width="100%" height={280}>
                   <LineChart data={avgTurnaround}>
@@ -295,7 +296,7 @@ export default function ReportsPage() {
               </div>
 
               {/* 6. Status Distribution */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5">
+              <div className="card-base p-4 md:p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-4">Status Distribution</h3>
                 {statusDist.length > 0 ? (
                   <ResponsiveContainer width="100%" height={280}>

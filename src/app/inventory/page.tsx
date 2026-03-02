@@ -83,7 +83,7 @@ export default function InventoryPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+        <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -110,34 +110,34 @@ export default function InventoryPage() {
             <>
               {/* Summary cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
-                <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-extrabold text-slate-900">{totalItems}</div>
                     <div className="text-sm text-slate-500 mt-1">Total Items</div>
                   </div>
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
+                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
                     <Package size={20} />
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                   <div>
                     <div className={`text-2xl font-extrabold ${lowStock > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
                       {lowStock}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">Low Stock</div>
                   </div>
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
                     <AlertTriangle size={20} />
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+                <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-extrabold text-slate-900">
                       ${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">Total Value</div>
                   </div>
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-green-100 text-green-600">
+                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-green-100 text-green-600">
                     <DollarSign size={20} />
                   </div>
                 </div>
@@ -152,17 +152,17 @@ export default function InventoryPage() {
                     placeholder="Search materials..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                    className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
                   />
                 </div>
               </div>
 
               {/* Materials table */}
-              <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+              <div className="card-base overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-slate-200 bg-slate-50">
+                      <tr className="border-b border-slate-200/70 bg-slate-50/70">
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                           Name
                         </th>
