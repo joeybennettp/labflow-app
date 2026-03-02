@@ -33,6 +33,7 @@ Every task follows this 5-step process:
 | After any code change | **Test** (always) |
 | Bug report with unclear cause | **Explore** → then Build |
 | Cross-cutting concern (affects multiple features) | **Explore** multiple feature areas in parallel |
+| Marketing, branding, or UI polish task | **Marketing & UI** agent (review output before commit) |
 
 ## Quality Gates
 
@@ -64,6 +65,7 @@ When a task touches a specific feature area, the Chief Engineer should reference
 | Calendar | `agents/features/CALENDAR.md` | Calendar Agent |
 | Activity audit log | `agents/features/ACTIVITY.md` | Activity Agent |
 | Lab settings | `agents/features/SETTINGS.md` | Settings Agent |
+| Marketing & UI | `agents/features/MARKETING_UI.md` | Marketing & UI Agent |
 
 ## References
 
