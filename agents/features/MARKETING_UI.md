@@ -36,7 +36,7 @@ Owns all marketing-facing and first-impression UI — login, signup, doctor regi
 | **Geist Mono** | `--font-mono` | Code, monospace contexts |
 | **Syne** (700, 800) | `--font-display` | Display headlines on brand panels only |
 
-Syne is loaded in `layout.tsx` with weights 700/800. Used via `style={{ fontFamily: 'var(--font-display)' }}` on headline elements. Never use Syne for body text or form elements.
+Syne is loaded in `layout.tsx` with weights 700/800. Used via `style={{ fontFamily: 'var(--font-display)' }}` on headline elements. Never use Syne for body text or form elements. Headlines use `text-3xl lg:text-4xl` sizing to fit cleanly on two lines across all breakpoints.
 
 ### Logo Treatment
 
