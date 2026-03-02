@@ -2,7 +2,9 @@
 
 ## Scope
 
-Owns all marketing-facing and first-impression UI — login, signup, doctor registration, and any future landing or onboarding pages. Responsible for brand identity, visual polish, design tokens, typography, animation systems, and responsive behavior across these surfaces. Does **not** own in-app feature pages (those belong to their respective feature agents).
+Owns **all UI/visual/styling changes** across the entire application — design tokens, component styling, CSS, animations, glass effects, card systems, layout polish, and brand identity. This includes both marketing-facing surfaces (login, signup, registration) and in-app UI styling changes. Feature agents own business logic and data flow; the Marketing & UI Agent owns how things look.
+
+**Mandatory routing rule:** All UI/visual/styling changes MUST be dispatched through this agent and reviewed by the Chief Engineer before committing. No other agent — including the Build Agent — should implement styling changes directly.
 
 ## Key Files
 

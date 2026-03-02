@@ -79,3 +79,7 @@ Status can move forward or backward one step. Shipped status includes carrier/tr
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 ```
+
+## Workflow Rules
+
+- **All UI/visual/styling changes** (design tokens, component styling, CSS, animations, glass effects, card systems, layout polish) must be dispatched through the Marketing & UI subagent (`agents/features/MARKETING_UI.md`) and reviewed by the Chief Engineer agent before committing. Never apply UI changes directly — even if the change seems small.

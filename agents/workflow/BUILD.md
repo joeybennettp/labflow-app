@@ -10,6 +10,10 @@ Multi-step implementation, code generation, and cross-cutting changes. The Build
 - Implementing a well-scoped feature or bug fix
 - Making changes that span multiple files
 
+## Routing Constraint
+
+**Do not implement UI/visual/styling changes directly.** All design token changes, component styling, CSS, animations, glass effects, card systems, and layout polish must be routed through the **Marketing & UI Agent** (`agents/features/MARKETING_UI.md`) and reviewed by the Chief Engineer before committing. This rule applies even for small tweaks.
+
 ## Coding Standards
 
 ### TypeScript

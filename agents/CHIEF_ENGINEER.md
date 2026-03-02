@@ -67,6 +67,10 @@ When a task touches a specific feature area, the Chief Engineer should reference
 | Lab settings | `agents/features/SETTINGS.md` | Settings Agent |
 | Marketing & UI | `agents/features/MARKETING_UI.md` | Marketing & UI Agent |
 
+## Mandatory Routing Rules
+
+- **All UI/visual/styling changes** — including design tokens, component styling, CSS, animations, glass effects, card systems, and layout polish — MUST be routed through the **Marketing & UI Agent** (`agents/features/MARKETING_UI.md`). The Chief Engineer reviews the output before committing. This applies even for small or "obvious" styling tweaks. Never apply UI changes directly.
+
 ## References
 
 - Project conventions: `CLAUDE.md`
