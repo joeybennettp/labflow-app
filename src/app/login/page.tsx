@@ -106,7 +106,7 @@ export default function LoginPage() {
             className="hidden md:block text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Precision Lab<br />Management
+            Precision Dental<br />Lab Management
           </h1>
           <p className="hidden md:block text-blue-200/70 text-sm mb-8 leading-relaxed">
             One platform for labs and doctors. Track cases in real time, manage invoicing, and collaborate seamlessly.
