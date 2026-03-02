@@ -19,10 +19,10 @@ export default function PortalHeader({ doctorName }: Props) {
   const pathname = usePathname();
 
   return (
-    <header className="bg-white border-b border-slate-200 px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
+    <header className="glass-topbar px-4 md:px-7 h-14 md:h-16 flex items-center justify-between shrink-0">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-brand-600 rounded-md flex items-center justify-center text-white text-sm font-black">
+          <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white text-sm font-black shadow-sm shadow-brand-500/30">
             LF
           </div>
           <div className="flex items-center gap-2">
@@ -45,9 +45,9 @@ export default function PortalHeader({ doctorName }: Props) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`px-3 py-1.5 text-sm font-semibold rounded-lg transition-colors ${
+                className={`px-3 py-1.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'bg-brand-50 text-brand-600'
+                    ? 'bg-brand-50 text-brand-600 shadow-sm shadow-brand-600/10'
                     : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                 }`}
               >

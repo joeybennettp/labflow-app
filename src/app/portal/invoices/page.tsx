@@ -120,7 +120,7 @@ export default function PortalInvoicesPage() {
             {/* Summary cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
               {/* Outstanding */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                 <div>
                   <div className="text-sm text-slate-500 mb-1">Outstanding</div>
                   <div className="text-2xl font-extrabold text-amber-600">
@@ -130,13 +130,13 @@ export default function PortalInvoicesPage() {
                     {pendingCount} {pendingCount === 1 ? 'case' : 'cases'}
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
                   <Clock size={20} />
                 </div>
               </div>
 
               {/* Invoiced */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                 <div>
                   <div className="text-sm text-slate-500 mb-1">Invoiced</div>
                   <div className="text-2xl font-extrabold text-green-600">
@@ -146,13 +146,13 @@ export default function PortalInvoicesPage() {
                     {invoicedCount} {invoicedCount === 1 ? 'case' : 'cases'}
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-green-100 text-green-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-green-100 text-green-600">
                   <CheckCircle size={20} />
                 </div>
               </div>
 
               {/* Total */}
-              <div className="bg-white border border-slate-200 rounded-lg p-4 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-4 md:p-5 flex items-start justify-between">
                 <div>
                   <div className="text-sm text-slate-500 mb-1">Total</div>
                   <div className="text-2xl font-extrabold text-slate-900">
@@ -162,7 +162,7 @@ export default function PortalInvoicesPage() {
                     {cases.length} {cases.length === 1 ? 'case' : 'cases'}
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 text-slate-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-slate-100 text-slate-600">
                   <DollarSign size={20} />
                 </div>
               </div>
@@ -176,7 +176,7 @@ export default function PortalInvoicesPage() {
                   onClick={() => setFilter(f.key)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors ${
                     filter === f.key
-                      ? 'bg-brand-600 text-white'
+                      ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/20'
                       : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
@@ -186,11 +186,11 @@ export default function PortalInvoicesPage() {
             </div>
 
             {/* Cases table */}
-            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+            <div className="card-base overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50">
+                    <tr className="border-b border-slate-200/70 bg-slate-50/70">
                       <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                         Case #
                       </th>
@@ -237,7 +237,7 @@ export default function PortalInvoicesPage() {
                       filtered.map((c) => (
                         <tr
                           key={c.id}
-                          className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                          className="border-b border-slate-100 hover:bg-brand-50/40 transition-colors"
                         >
                           <td className="px-4 py-3">
                             <span className="font-mono font-semibold text-brand-600">
@@ -263,8 +263,8 @@ export default function PortalInvoicesPage() {
                             <span
                               className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                                 c.invoiced
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-amber-100 text-amber-700'
+                                  ? 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/10'
+                                  : 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/10'
                               }`}
                             >
                               {c.invoiced ? 'Invoiced' : 'Pending'}
@@ -277,7 +277,7 @@ export default function PortalInvoicesPage() {
                   {/* Totals row */}
                   {filtered.length > 0 && (
                     <tfoot>
-                      <tr className="bg-slate-50 border-t-2 border-slate-200">
+                      <tr className="bg-slate-50/70 border-t-2 border-slate-200/70">
                         <td
                           colSpan={5}
                           className="px-4 py-3 text-sm font-bold text-slate-700 text-right hidden md:table-cell"

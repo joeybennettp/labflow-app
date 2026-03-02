@@ -185,7 +185,7 @@ export default function PortalCaseDetail({ caseData, onClose, labName, labPhone,
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
             Lab
           </div>
-          <div className="bg-slate-50 rounded-lg border border-slate-100 p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <div className="bg-slate-50 rounded-lg border border-slate-100/70 p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <span className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
               <Building2 size={14} className="text-brand-600" />
               {labName}
@@ -213,7 +213,7 @@ export default function PortalCaseDetail({ caseData, onClose, labName, labPhone,
       )}
 
       {/* Timestamps */}
-      <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400">
+      <div className="mt-5 pt-4 border-t border-slate-100/70 flex flex-col sm:flex-row gap-2 sm:gap-6 text-xs text-slate-400">
         <span>Created: {formatTimestamp(caseData.created_at)}</span>
         <span>Updated: {formatTimestamp(caseData.updated_at)}</span>
       </div>

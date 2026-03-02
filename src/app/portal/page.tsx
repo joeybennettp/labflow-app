@@ -210,7 +210,7 @@ export default function PortalPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
               {/* Active Cases */}
-              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-3 md:p-5 flex items-start justify-between">
                 <div>
                   <div className="text-2xl md:text-3xl font-extrabold tracking-tight leading-none text-slate-900">
                     {activeCases}
@@ -220,13 +220,13 @@ export default function PortalPage() {
                     {inProgressCount} in progress
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
                   <ClipboardList size={20} />
                 </div>
               </div>
 
               {/* Due This Week */}
-              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-3 md:p-5 flex items-start justify-between">
                 <div>
                   <div className="text-2xl md:text-3xl font-extrabold tracking-tight leading-none text-slate-900">
                     {dueThisWeek}
@@ -236,13 +236,13 @@ export default function PortalPage() {
                     {dueThisWeek > 0 ? 'Upcoming deadlines' : 'Nothing due soon'}
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-amber-100 text-amber-600">
                   <CalendarClock size={20} />
                 </div>
               </div>
 
               {/* Overdue */}
-              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-3 md:p-5 flex items-start justify-between">
                 <div>
                   <div className={`text-2xl md:text-3xl font-extrabold tracking-tight leading-none ${
                     overdueCount > 0 ? 'text-red-600' : 'text-slate-900'
@@ -256,13 +256,13 @@ export default function PortalPage() {
                     {overdueCount > 0 ? 'Need attention' : 'All on track'}
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-red-100 text-red-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-red-100 text-red-600">
                   <AlertTriangle size={20} />
                 </div>
               </div>
 
               {/* Total Cases */}
-              <div className="bg-white border border-slate-200 rounded-lg p-3 md:p-5 flex items-start justify-between">
+              <div className="card-interactive hover:card-interactive-hover p-3 md:p-5 flex items-start justify-between">
                 <div>
                   <div className="text-2xl md:text-3xl font-extrabold tracking-tight leading-none text-slate-900">
                     {cases.length}
@@ -272,7 +272,7 @@ export default function PortalPage() {
                     {cases.filter((c) => c.status === 'shipped').length} completed
                   </div>
                 </div>
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 text-slate-600">
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 bg-slate-100 text-slate-600">
                   <CheckCircle size={20} />
                 </div>
               </div>
@@ -285,7 +285,7 @@ export default function PortalPage() {
                 placeholder="Search cases..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 sm:max-w-md px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-3 focus:ring-brand-100"
+                className="flex-1 sm:max-w-md px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100 transition-colors duration-200"
               />
             </div>
 
@@ -297,7 +297,7 @@ export default function PortalPage() {
                   onClick={() => setStatusFilter(tab)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors ${
                     statusFilter === tab
-                      ? 'bg-brand-600 text-white'
+                      ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/20'
                       : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
@@ -307,7 +307,7 @@ export default function PortalPage() {
             </div>
 
             {/* Cases table */}
-            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+            <div className="card-base overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
@@ -319,7 +319,7 @@ export default function PortalPage() {
                           <th
                             key={col.key}
                             onClick={() => handleSort(col.key)}
-                            className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide bg-slate-50 border-b border-slate-200 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
+                            className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide bg-slate-50/70 border-b border-slate-200/70 cursor-pointer select-none whitespace-nowrap transition-colors hover:bg-slate-100 hover:text-slate-700 ${
                               isActive ? 'text-brand-600' : 'text-slate-500'
                             } ${col.hideOnMobile ? 'hidden sm:table-cell' : ''}`}
                           >
@@ -356,7 +356,7 @@ export default function PortalPage() {
                           <tr
                             key={c.id}
                             onClick={() => setSelectedCase(c)}
-                            className={`border-b border-slate-100 cursor-pointer transition-colors hover:bg-slate-50 ${
+                            className={`border-b border-slate-100 cursor-pointer transition-colors hover:bg-brand-50/40 ${
                               c.rush ? 'bg-red-50/50' : ''
                             }`}
                           >
